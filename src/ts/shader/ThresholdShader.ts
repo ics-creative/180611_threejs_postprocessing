@@ -9,9 +9,9 @@ module shader{
 			"tDiffuse": { type: "t", value: null }
 		};
 
-        defines:{[key:string]:any} = shader.ShaderUtil.mergeDefines(
-            {},shader.ShaderUtil.LUMINANCE
-        );
+		defines:{[key:string]:any} = shader.ShaderUtil.mergeDefines(
+			{},shader.ShaderUtil.LUMINANCE
+		);
 
 		vertexShader: string = [
 			"varying vec2 vUv;",

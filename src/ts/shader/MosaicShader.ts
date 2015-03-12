@@ -1,6 +1,6 @@
 /**
- * @author Nozomi Nohara / http://github.com/ics-nohara
  * Mosaic
+ * @author Nozomi Nohara / http://github.com/ics-nohara
  */
 module shader{
 	export class MosaicShader implements shader.IShader{

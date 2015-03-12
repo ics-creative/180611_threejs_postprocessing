@@ -2,7 +2,6 @@
  * @author Nozomi Nohara / http://github.com/ics-nohara
  * Random dither
  */
-/// <reference path="ShaderUtil.ts"/>
 module shader{
 	export class RandomDitherShader implements shader.IShader{
 
@@ -10,9 +9,9 @@ module shader{
 			"tDiffuse": { type: "t", value: null }
 		};
 
-        defines:{[key:string]:any} = shader.ShaderUtil.mergeDefines(
-            {},shader.ShaderUtil.LUMINANCE
-        );
+		defines:{[key:string]:any} = shader.ShaderUtil.mergeDefines(
+			{},shader.ShaderUtil.LUMINANCE
+		);
 
 		vertexShader: string = [
 
@@ -29,31 +28,31 @@ module shader{
 
 
 		fragmentShader: string = [
-            shader.ShaderUtil.RANDOM_DEFINE,
+			shader.ShaderUtil.RANDOM_DEFINE,
 
-            "varying vec2 vUv;",
-            "uniform sampler2D tDiffuse;",
-            "void main() {",
+			"varying vec2 vUv;",
+			"uniform sampler2D tDiffuse;",
+			"void main() {",
 
-                "vec4 color = texture2D(tDiffuse, vUv);",
+				"vec4 color = texture2D(tDiffuse, vUv);",
 
-                "float v = color.x * R_LUMINANCE + color.y * G_LUMINANCE + color.z * B_LUMINANCE;",
+				"float v = color.x * R_LUMINANCE + color.y * G_LUMINANCE + color.z * B_LUMINANCE;",
 
-                "if (v > rand(vUv)) {",
-                    "color.x = 1.0;",
-                    "color.y = 1.0;",
-                    "color.z = 1.0;",
+				"if (v > rand(vUv)) {",
+					"color.x = 1.0;",
+					"color.y = 1.0;",
+					"color.z = 1.0;",
 
-                "} else {",
-                    "color.x = 0.0;",
-                    "color.y = 0.0;",
-                    "color.z = 0.0;",
-                "}",
+				"} else {",
+					"color.x = 0.0;",
+					"color.y = 0.0;",
+					"color.z = 0.0;",
+				"}",
 
 
-                // 描画
-                "gl_FragColor = color;",
-            "}"
+				// 描画
+				"gl_FragColor = color;",
+			"}"
 		].join("\n");
 
 	};

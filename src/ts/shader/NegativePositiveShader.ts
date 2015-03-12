@@ -1,8 +1,7 @@
 /**
- * @author Nozomi Nohara / http://github.com/ics-nohara
  * Negative-Positive Convert
+ * @author Nozomi Nohara / http://github.com/ics-nohara
  */
-
 module shader{
 	export class NegativePositiveShader implements shader.IShader{
 		uniforms: { [key:string]:IShaderUniforms} = {
@@ -28,9 +27,9 @@ module shader{
 
 			"vec4 color = texture2D( tDiffuse, vUv );",
 
-		    "gl_FragColor = vec4(1.0 - color.x, 1.0 - color.y, 1.0 - color.z, 1.0);",
-		    
-		    "}"
+			"gl_FragColor = vec4(1.0 - color.x, 1.0 - color.y, 1.0 - color.z, 1.0);",
+			
+			"}"
 		].join("\n");
 
 	};

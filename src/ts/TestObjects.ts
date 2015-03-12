@@ -1,56 +1,65 @@
 /// <reference path="../../typings/tsd.d.ts" />
+
+/**
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ * 画面上に表示するオブジェクトおwまとめたクラスです。
+ */
+
 class TestObjects{
 
 	groups: THREE.Group[] = [];
-    renderer:THREE.WebGLRenderer;
+	renderer:THREE.WebGLRenderer;
 	video:any;
 	videoImageContext:any;
 	videoTexture:THREE.Texture;
 	current:number;
 
-    constructor(scene:THREE.Scene,renderer:THREE.WebGLRenderer) {
+	constructor(scene:THREE.Scene,renderer:THREE.WebGLRenderer,spMode:boolean) {
 
-    	this.renderer = renderer;
+		this.renderer = renderer;
 
-    	this.groups.push(this.getImagePlane());
+		this.groups.push(this.getImagePlane());
 
-    	this.groups.push(this.getVideoImagePlane());
+		if(!spMode){
+			this.groups.push(this.getVideoImagePlane());
 
-    	for(var id in this.groups){
-    		scene.add(this.groups[id]);
-    	}
-    	this.current = 0;
-    }
+		}
+		
+		for(var id in this.groups){
+			scene.add(this.groups[id]);
+		}
+		this.current = 0;
+	}
 
-    change(){
-    	
+	change(){
+		
 
-    	if( this.current == 1 ){
-    		this.video.pause();
-    	}
+		if( this.current == 1 ){
+			this.video.pause();
+		}
 
-    	this.groups[this.current].visible = false;
-    	this.current++;
-    	if( this.current >= this.groups.length ){
-    		this.current = 0;
-    	}
+		this.groups[this.current].visible = false;
+		this.current++;
+		if( this.current >= this.groups.length ){
+			this.current = 0;
+		}
 
 
-    	if( this.current == 1 ){
-    		this.video.play();
-    	}
+		if( this.current == 1 ){
+			this.video.play();
+		}
 
-    	this.groups[this.current].visible = true;
+		this.groups[this.current].visible = true;
 
-    }
+	}
 
-    getVideoImagePlane() {
-    	//video要素とそれをキャプチャするcanvas要素を生成
+	getVideoImagePlane() {
+		//video要素とそれをキャプチャするcanvas要素を生成
 		this.video = document.createElement('video');
 		this.video.src = "texture/BigBuckBunny_320x180.mp4";
 		this.video.load();
-        this.video.pause();
-        this.video.volume = 0;
+		this.video.pause();
+		this.video.volume = 0;
 
 		this.video.loop = true;
 
@@ -69,46 +78,46 @@ class TestObjects{
 
 		//生成したvideo textureをmapに指定し、overdrawをtureにしてマテリアルを生成
 		var movieMaterial = new THREE.MeshBasicMaterial(  { map:this.videoTexture, side: THREE.DoubleSide } );//{map: this.videoTexture, overdraw: true, side:THREE.DoubleSide});
-		var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
-		var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
+var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
+var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
 
-        movieScreen.position.x = 1.68;
+movieScreen.position.x = 1.68;
 
-        movieScreen.scale.x = movieScreen.scale.y = 5;
+movieScreen.scale.x = movieScreen.scale.y = 5;
+var group:THREE.Group = new THREE.Group();
+group.add(movieScreen);
+
+		//movieScreen.rotation.y = THREE.Math.degToRad(180);
+
+		group.visible = false;
+		return group;
+	}
+
+	getImagePlane() {
+
 		var group:THREE.Group = new THREE.Group();
-		group.add(movieScreen);
+		var texture = THREE.ImageUtils.loadTexture( 'texture/flower.jpg' );
+		texture.anisotropy = this.renderer.getMaxAnisotropy();
 
-        //movieScreen.rotation.y = THREE.Math.degToRad(180);
+		var geometry = new THREE.PlaneGeometry(1.5,1.0,1,1);
+		var material = new THREE.MeshBasicMaterial( { map:texture, side: THREE.DoubleSide } );
 
-        group.visible = false;
-        return group;
-    }
+		var mesh:THREE.Mesh = new THREE.Mesh( geometry, material );
 
-    getImagePlane() {
+		mesh.scale.x = mesh.scale.y = 3.5;
+		group.add(mesh);
 
-    	var group:THREE.Group = new THREE.Group();
-        var texture = THREE.ImageUtils.loadTexture( 'texture/flower.jpg' );
-        texture.anisotropy = this.renderer.getMaxAnisotropy();
+		group.visible = true;
+		return group;
+	}
 
-        var geometry = new THREE.PlaneGeometry(1.5,1.0,1,1);
-        var material = new THREE.MeshBasicMaterial( { map:texture, side: THREE.DoubleSide } );
-
-        var mesh:THREE.Mesh = new THREE.Mesh( geometry, material );
-
-        mesh.scale.x = mesh.scale.y = 3.5;
-        group.add(mesh);
-
-        group.visible = true;
-        return group;
-    }
-
-    onUpdate() {
+	onUpdate() {
 		//loop updateの中で実行
 		if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-		    this.videoImageContext.drawImage(this.video, 0, 0);
-		    if (this.videoTexture) {
-		        this.videoTexture.needsUpdate = true;
-		    }
+			this.videoImageContext.drawImage(this.video, 0, 0);
+			if (this.videoTexture) {
+				this.videoTexture.needsUpdate = true;
+			}
 		}
-    }
+	}
 }

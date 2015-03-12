@@ -1,35 +1,35 @@
 /**
- * @author Nozomi Nohara / http://github.com/ics-nohara
  * Bokashi
+ * @author Nozomi Nohara / http://github.com/ics-nohara
  */
 module shader{
 	export class BokashiShader implements shader.IShader{
 
-	    constructor(width:number,height:number) {
-	    	this.setBokashiScale(150.0);
-	        this.setScreenSize(width,height);
-	    }
+		constructor(width:number,height:number) {
+			this.setBokashiScale(150.0);
+			this.setScreenSize(width,height);
+		}
 
- 		setMousePos(mouseX:number,mouseY:number){
- 			this.uniforms["vCenter"].value.x = mouseX;
- 			this.uniforms["vCenter"].value.y = this.uniforms["vScreenSize"].value.y - mouseY;
- 		}
+		setMousePos(mouseX:number,mouseY:number){
+			this.uniforms["vCenter"].value.x = mouseX;
+			this.uniforms["vCenter"].value.y = this.uniforms["vScreenSize"].value.y - mouseY;
+		}
 
-	    setScreenSize(width:number,height:number) {
-	        this.uniforms["vScreenSize"].value.x = width;
-	        this.uniforms["vScreenSize"].value.y = height;
-	    }
+		setScreenSize(width:number,height:number) {
+			this.uniforms["vScreenSize"].value.x = width;
+			this.uniforms["vScreenSize"].value.y = height;
+		}
 
-	    setBokashiScale(scale:number){
-	        this.uniforms["fBokashiScale"].value = scale;
-	    }
+		setBokashiScale(scale:number){
+			this.uniforms["fBokashiScale"].value = scale;
+		}
 
 		uniforms: { [key:string]:IShaderUniforms} = {
 			"tDiffuse": 	{ type: "t", value: null },
 			"vScreenSize":	{ type:"v2",value:new THREE.Vector2(0.0,0.0)},
 			"vCenter":		{ type:"v2",value:new THREE.Vector2(1000,100)},
 			"fBokashiScale":{ type:"f",value: null}
- 		};
+		};
 
 		vertexShader: string = [
 
@@ -44,6 +44,7 @@ module shader{
 
 		].join("\n");
 
+		//	windows / chormeだとcolor値が壊れるみたいでバグる
 		fragmentShader: string = [
 			"varying vec2 vUv;",
 			"uniform sampler2D tDiffuse;",
@@ -68,11 +69,11 @@ module shader{
 					"for(int j=0;j<int( count ) ;j++)",
 					"{",
 						"float y = (floor(vUv.y  * vScreenSize.y) + s + float(j) ) / vScreenSize.y ;",
-			    		"color += texture2D(tDiffuse, vec2( x, y ) );",
-			    	"}",
-			    	
-			    "}",
-			    "gl_FragColor = color / float(count * count);",
+						"color += texture2D(tDiffuse, vec2( x, y ) );",
+					"}",
+					
+				"}",
+				"gl_FragColor = color / float(count * count);",
 			"}"
 		].join("\n");
 

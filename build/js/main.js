@@ -74,40 +74,6 @@ var shader;
 
 var shader;
 (function (shader) {
-    var ShaderUtil = (function () {
-        function ShaderUtil() {
-        }
-        Object.defineProperty(ShaderUtil, "RANDOM_DEFINE", {
-            get: function () {
-                return ["float rand(vec2 co) {", "float a = fract(dot(co, vec2(2.067390879775102, 12.451168662908249))) - 0.5;", "float s = a * (6.182785114200511 + a * a * (-38.026512460676566 + a * a * 53.392573080032137));", "float t = fract(s * 43758.5453);", "return t;", "}"].join("\n");
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(ShaderUtil, "LUMINANCE", {
-            get: function () {
-                return {
-                    R_LUMINANCE: 0.298912,
-                    G_LUMINANCE: 0.586611,
-                    B_LUMINANCE: 0.114478
-                };
-            },
-            enumerable: true,
-            configurable: true
-        });
-        ShaderUtil.mergeDefines = function (dest, src) {
-            for (var keyName in src) {
-                dest[keyName] = src[keyName];
-            }
-            return dest;
-        };
-        return ShaderUtil;
-    })();
-    shader.ShaderUtil = ShaderUtil;
-})(shader || (shader = {}));
-
-var shader;
-(function (shader) {
     var RandomDitherShader = (function () {
         function RandomDitherShader() {
             this.uniforms = {
@@ -469,11 +435,13 @@ var shader;
 
 
 var TestObjects = (function () {
-    function TestObjects(scene, renderer) {
+    function TestObjects(scene, renderer, spMode) {
         this.groups = [];
         this.renderer = renderer;
         this.groups.push(this.getImagePlane());
-        this.groups.push(this.getVideoImagePlane());
+        if (!spMode) {
+            this.groups.push(this.getVideoImagePlane());
+        }
         for (var id in this.groups) {
             scene.add(this.groups[id]);
         }
@@ -581,7 +549,12 @@ var Main = (function () {
         }
     };
     Main.prototype.initObjects = function () {
-        this.objects = new TestObjects(this.scene, this.renderer);
+        this.objects = new TestObjects(this.scene, this.renderer, this.spMode);
+        if (this.spMode) {
+            var changeButton = document.getElementById('object_change');
+            changeButton.style.display = 'none';
+            changeButton.style.visibility = 'hidden';
+        }
     };
     Main.prototype.resetShader = function () {
         this.normalRenderMode = true;
@@ -867,3 +840,37 @@ var RoundCameraController = (function () {
     return RoundCameraController;
 })();
 ;
+
+var shader;
+(function (shader) {
+    var ShaderUtil = (function () {
+        function ShaderUtil() {
+        }
+        Object.defineProperty(ShaderUtil, "RANDOM_DEFINE", {
+            get: function () {
+                return ["float rand(vec2 co) {", "float a = fract(dot(co, vec2(2.067390879775102, 12.451168662908249))) - 0.5;", "float s = a * (6.182785114200511 + a * a * (-38.026512460676566 + a * a * 53.392573080032137));", "float t = fract(s * 43758.5453);", "return t;", "}"].join("\n");
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(ShaderUtil, "LUMINANCE", {
+            get: function () {
+                return {
+                    R_LUMINANCE: 0.298912,
+                    G_LUMINANCE: 0.586611,
+                    B_LUMINANCE: 0.114478
+                };
+            },
+            enumerable: true,
+            configurable: true
+        });
+        ShaderUtil.mergeDefines = function (dest, src) {
+            for (var keyName in src) {
+                dest[keyName] = src[keyName];
+            }
+            return dest;
+        };
+        return ShaderUtil;
+    })();
+    shader.ShaderUtil = ShaderUtil;
+})(shader || (shader = {}));
