@@ -17,12 +17,6 @@
 		<title>ピクセルシェーダーデモ</title>
 </head>
 <body>
-	<script>
-		function _change_onClick () {
-			main.changeScene();
-		}
-
-	</script>
 	<div id="canvas-wrapper"></div>
 	<div id="myapp" >
 		<div class="shader_select_menu">     
@@ -31,9 +25,15 @@
 	        </ul>
 	    </div>
 	</div>
-	<div id="object_change"  onclick="_change_onClick()">切り替え</div>
+	<div id="object_change" onclick="_change_onClick()">切り替え</div>
+
 	<script src="js/vue.min.js"></script>
 	<script>
+
+		function _change_onClick () {
+			main.changeScene();
+		}
+		
 		var main = new Main();
 		main.initialize();
 
