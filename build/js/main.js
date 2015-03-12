@@ -1,3 +1,7 @@
+/**
+ * Negative-Positive Convert
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ */
 var shader;
 (function (shader) {
     var NegativePositiveShader = (function () {
@@ -27,6 +31,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * Mosaic
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ */
 var shader;
 (function (shader) {
     var MosaicShader = (function () {
@@ -72,6 +80,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ * Random dither
+ */
 var shader;
 (function (shader) {
     var RandomDitherShader = (function () {
@@ -113,6 +125,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ * Bokashi
+ */
 var shader;
 (function (shader) {
     var ThresholdShader = (function () {
@@ -149,6 +165,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ * Bayer dither
+ */
 var shader;
 (function (shader) {
     var BayerDitherShader = (function () {
@@ -233,6 +253,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * Sepia tone
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ */
 var shader;
 (function (shader) {
     var SepiaToneShader = (function () {
@@ -267,6 +291,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * diffusion
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ */
 var shader;
 (function (shader) {
     var DiffusionShader = (function () {
@@ -308,6 +336,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * Bokashi
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ */
 var shader;
 (function (shader) {
     var BokashiShader = (function () {
@@ -325,6 +357,7 @@ var shader;
                 "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
                 "}"
             ].join("\n");
+            //	windows / chormeだとcolor値が壊れるみたいでバグる
             this.fragmentShader = [
                 "varying vec2 vUv;",
                 "uniform sampler2D tDiffuse;",
@@ -372,6 +405,10 @@ var shader;
     ;
 })(shader || (shader = {}));
 
+/**
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ * Uzumaki
+ */
 var shader;
 (function (shader) {
     var UzumakiShader = (function () {
@@ -434,6 +471,11 @@ var shader;
 
 
 
+/// <reference path="../../typings/tsd.d.ts" />
+/**
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ * 画面上に表示するオブジェクトをまとめたクラスです。
+ */
 var TestObjects = (function () {
     function TestObjects(scene, renderer, spMode) {
         this.groups = [];
@@ -462,6 +504,7 @@ var TestObjects = (function () {
         this.groups[this.current].visible = true;
     };
     TestObjects.prototype.getVideoImagePlane = function () {
+        //video要素とそれをキャプチャするcanvas要素を生成
         this.video = document.createElement('video');
         this.video.src = "texture/BigBuckBunny_320x180.mp4";
         this.video.load();
@@ -474,10 +517,12 @@ var TestObjects = (function () {
         this.videoImageContext = videoImage.getContext('2d');
         this.videoImageContext.fillStyle = '#000000';
         this.videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+        //生成したcanvasをtextureとしてTHREE.Textureオブジェクトを生成
         this.videoTexture = new THREE.Texture(videoImage);
         this.videoTexture.minFilter = THREE.LinearFilter;
         this.videoTexture.magFilter = THREE.LinearFilter;
-        var movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.DoubleSide });
+        //生成したvideo textureをmapに指定し、overdrawをtureにしてマテリアルを生成
+        var movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.DoubleSide }); //{map: this.videoTexture, overdraw: true, side:THREE.DoubleSide});
         var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
         var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
         movieScreen.position.x = 1.85;
@@ -485,6 +530,7 @@ var TestObjects = (function () {
         movieScreen.scale.x = movieScreen.scale.y = 5.5;
         var group = new THREE.Group();
         group.add(movieScreen);
+        //movieScreen.rotation.y = THREE.Math.degToRad(180);
         group.visible = false;
         return group;
     };
@@ -501,6 +547,7 @@ var TestObjects = (function () {
         return group;
     };
     TestObjects.prototype.onUpdate = function () {
+        //loop updateの中で実行
         if (this.current != 1)
             return;
         if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
@@ -513,6 +560,10 @@ var TestObjects = (function () {
     return TestObjects;
 })();
 
+/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="shader/shader.d.ts" />
+/// <reference path="three_examples.d.ts" />
+/// <reference path="TestObjects.ts" />
 var Main = (function () {
     function Main() {
         this.effects = {};
@@ -535,6 +586,7 @@ var Main = (function () {
     };
     Main.prototype.initVue = function () {
         var _this = this;
+        // v-repeat
         this.vm = new Vue({
             el: '#myapp',
             data: {
@@ -636,6 +688,7 @@ var Main = (function () {
     };
     Main.prototype.startScene = function () {
         var _this = this;
+        //  ThreeeJSの初期化処理
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(77, window.innerWidth / window.innerHeight, 0.1, 1000);
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -643,6 +696,7 @@ var Main = (function () {
         this.renderer.setPixelRatio(window.devicePixelRatio);
         document.getElementById('canvas-wrapper').appendChild(this.renderer.domElement);
         this.initObjects();
+        // postprocessing
         this.composer = new THREE.EffectComposer(this.renderer);
         this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
         this.addShaders();
@@ -656,6 +710,7 @@ var Main = (function () {
             else {
                 _this.composer.render();
             }
+            //  マウス位置を更新
             _this.uzumaki.setMousePos(_this.mouseX, _this.mouseY);
             _this.objects.onUpdate();
         };
@@ -683,12 +738,17 @@ var Main = (function () {
         pass.renderToScreen = false;
         pass.enabled = false;
         this.effects[name] = { material: shader, pass: pass };
+        //  順番用
         this.effectList.push(this.effects[name]);
     };
     return Main;
 })();
 ;
 
+/**
+ * シェーダーでよく使う機能をまとめたクラスです
+ * @author Nozomi Nohara / http://github.com/ics-nohara
+ */
 var shader;
 (function (shader) {
     var ShaderUtil = (function () {

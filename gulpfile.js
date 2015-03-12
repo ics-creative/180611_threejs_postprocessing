@@ -33,7 +33,7 @@ gulp.task('typescript-compile', function () {
     gulp.src(['src/ts/**/*.ts'])
         .pipe(typescript({
             target: "ES5",
-            removeComments: true,
+            removeComments: false,
             sortOutput: true
         }))
         .js
