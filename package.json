@@ -1,0 +1,23 @@
+{
+  "name": "image_processing_shader_demo",
+  "version": "0.1.0",
+  "description": "three.js+シェーダーでpostprocessing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nozomi Nohara",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "~2.2.1",
+    "gulp": "~3.8.11",
+    "gulp-concat": "^2.5.2",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^0.6.6",
+    "gulp-typescript": "~2.4.2",
+    "gulp-uglify": "^1.1.0",
+    "rimraf": "^2.3.2",
+    "run-sequence": "^1.0.2",
+    "typescript": "~1.4.1"
+  }
+}

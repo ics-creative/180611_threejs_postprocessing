@@ -1,0 +1,79 @@
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="description" content="three.jsでのピクセルシェーダーデモ">
+<meta name="author" content="Nozomi Nohara">
+<meta name="viewport" content="width=device-width"  initial-scale="1" >
+<link rel="shortcut icon" href="">
+		<script src="js/three.js"></script>
+		<script src="js/main.js"></script>
+		<script src="js/shaders/CopyShader.js"></script>
+		<script src="js/postprocessing/MaskPass.js"></script>
+		<script src="js/postprocessing/RenderPass.js"></script>
+		<script src="js/postprocessing/EffectComposer.js"></script>
+		<script src="js/postprocessing/ShaderPass.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="css/main.css" media="all">
+		<title>ピクセルシェーダーデモ</title>
+</head>
+<body>
+	<script>
+		function _change_onClick () {
+			main.changeScene();
+		}
+
+	</script>
+	<div id="canvas-wrapper"></div>
+	<div id="myapp" >
+		<div class="shader_select_menu">     
+			<ul>
+	            <li  v-repeat="shader_change_buttons" v-on="click: _onClick"><span>{{value?"✓":""}}{{name}}</span></li>
+	        </ul>
+	    </div>
+	</div>
+	<div id="object_change"  onclick="_change_onClick()">切り替え</div>
+
+	<script src="js/vue.min.js"></script>
+	<script>
+		var main = new Main();
+		main.initialize();
+
+        // v-repeat
+        var vm = new Vue({
+            el: '#myapp',
+            data: {
+                shader_change_buttons: [
+                	{name:'リセット', id:'reset',value:false},
+                	{name:'ネガ', id:'nega',value:false},
+                	{name:'セピア調', id:'sepia_tone',value:false},
+                	{name:'モザイク(風)', id:'mosaic',value:false},
+                	{name:'拡散', id:'diffusion',value:false},
+                	{name:'ぼかし', id:'bokashi',value:false},
+                	{name:'うずまき', id:'uzumaki',value:false},
+                	{name:'2値化(threshold)', id:'threshold',value:false},
+                	{name:'2値化(ランダムディザ)', id:'random_dither',value:false},
+                	{name:'2値化(ベイヤーディザ)', id:'bayer_dither',value:false}
+                ],
+                white:"whiteStyle",
+                vueApp:"vueApplication"
+            },
+
+			methods: {
+				_onClick: function(e) {
+				  if(e.targetVM.id == "reset" ) {
+				  	main.resetShader();
+				  	for( i = 0; i < this.shader_change_buttons.length; i ++ ) {
+				  		this.shader_change_buttons[i].value = false;
+				  	}
+				  } else {
+				  	e.targetVM.value = !e.targetVM.value;
+				  	main.changeShader( e.targetVM.id,e.targetVM.value );
+				  }
+				}
+			}
+
+        });
+
+	</script>
+</body>
+</html>
