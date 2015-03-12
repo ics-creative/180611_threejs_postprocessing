@@ -13,39 +13,6 @@ canvas {
 	height: 100%; 
 }
 
-#licence{
-	padding: 0;
-	margin: 0;
-	display: block;
-	background-color: #333333;
-	padding: 3px 10px;
-	text-decoration: none;
-	color: #ffffff;
-	width: 160px;
-	height: 35px;
-	margin: 0px;
-	text-align: left;
-	font-size: 12px;
-
-	position:absolute; 
-	top:100%;
-	left:100%;
-
-	margin: -50px 0 0 -200px;
-
-
-	user-select: none; 
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	-webkit-transition: all .3s;
-	transition: all .3s;
-	cursor:pointer;
-}
 #object_change{
 	padding: 0;
 	margin: 0;
@@ -79,6 +46,12 @@ canvas {
 	transition: all .3s;
 	cursor:pointer;
 }
+
+#object_change:hover{
+	background-color: #9eb7dd;
+}
+
+
 .shader_select_menu{
 	position:absolute;
 	width: 320px;
