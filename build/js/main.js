@@ -604,7 +604,6 @@ var Main = (function () {
                 _this.composer.render();
             }
             _this.uzumaki.setMousePos(_this.mouseX, _this.mouseY);
-            _this.bokashi.setMousePos(_this.mouseX, _this.mouseY);
             _this.objects.onUpdate();
         };
         render();
@@ -616,15 +615,12 @@ var Main = (function () {
         this.addEffect("sepia_tone", new shader.SepiaToneShader);
         this.addEffect("mosaic", new shader.MosaicShader(width, height));
         this.addEffect("diffusion", new shader.DiffusionShader(width, height));
-        this.addEffect("bokashi", this.bokashi = new shader.BokashiShader(width, height));
-        this.bokashi.uniforms = this.effects["bokashi"].pass.uniforms;
         this.addEffect("uzumaki", this.uzumaki = new shader.UzumakiShader(width, height));
         this.uzumaki.uniforms = this.effects["uzumaki"].pass.uniforms;
         this.addEffect("threshold", new shader.ThresholdShader);
         this.addEffect("random_dither", new shader.RandomDitherShader);
         this.addEffect("bayer_dither", new shader.BayerDitherShader(width, height));
         if (this.spMode) {
-            this.bokashi.setBokashiScale(75);
             this.uzumaki.setUzumakiScale(75);
         }
     };

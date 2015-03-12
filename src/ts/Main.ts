@@ -31,7 +31,6 @@ class Main {
 	private mouseY:number;
 
 	private uzumaki:shader.UzumakiShader;
-	private bokashi:shader.BokashiShader;
 	private spMode:boolean;
 
 	private objects:TestObjects;
@@ -153,7 +152,6 @@ class Main {
 				
 				//  マウス位置を更新
 				this.uzumaki.setMousePos(this.mouseX,this.mouseY);
-				this.bokashi.setMousePos(this.mouseX,this.mouseY);
 
 				this.objects.onUpdate();
 		};
@@ -169,9 +167,6 @@ class Main {
 		this.addEffect( "mosaic",           new shader.MosaicShader(width,height));
 		this.addEffect( "diffusion",        new shader.DiffusionShader(width,height));
 
-		this.addEffect( "bokashi", this.bokashi = new shader.BokashiShader(width,height));
-		this.bokashi.uniforms = this.effects["bokashi"].pass.uniforms;
-
 		this.addEffect( "uzumaki", this.uzumaki =  new shader.UzumakiShader(width,height));
 		this.uzumaki.uniforms = this.effects["uzumaki"].pass.uniforms;
 
@@ -180,7 +175,6 @@ class Main {
 		this.addEffect( "bayer_dither",     new shader.BayerDitherShader(width,height));
 
 		if(this.spMode) {
-			this.bokashi.setBokashiScale(75);
 			this.uzumaki.setUzumakiScale(75);
 			
 		}
