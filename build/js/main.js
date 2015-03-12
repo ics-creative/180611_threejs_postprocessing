@@ -325,7 +325,7 @@ var shader;
                 "void main() {",
                 "float radius = 5.0;",
                 "float x = (vUv.x * vScreenSize.x) + rand(vUv) * radius * 2.0 - radius;",
-                "float y = (vUv.y * vScreenSize.y) + rand(vUv) * radius * 2.0 - radius;",
+                "float y = (vUv.y * vScreenSize.y) + rand(vec2(vUv.y,vUv.x)) * radius * 2.0 - radius;",
                 "vec4 textureColor = texture2D(tDiffuse, vec2( x, y ) / vScreenSize );",
                 "gl_FragColor = textureColor;",
                 "}"
