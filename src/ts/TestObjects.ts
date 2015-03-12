@@ -2,7 +2,7 @@
 
 /**
  * @author Nozomi Nohara / http://github.com/ics-nohara
- * 画面上に表示するオブジェクトおwまとめたクラスです。
+ * 画面上に表示するオブジェクトをまとめたクラスです。
  */
 
 class TestObjects{
