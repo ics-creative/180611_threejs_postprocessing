@@ -2,6 +2,11 @@
 /// <reference path="shader/shader.d.ts" />
 /// <reference path="three_examples.d.ts" />
 /// <reference path="TestObjects.ts" />
+/**
+ * 定番の画像処理をthree.js+シェーダーでいくつか作ってみるデモ
+ * https://github.com/ics-nohara/threejs_postprocessing_demo
+ * @author Nozomi Nohara / https://github.com/ics-nohara
+ */
 interface Window{
 	superagent:any;
 }
@@ -45,8 +50,6 @@ class Main {
 	}
 
 	initMouse() {
-
-
 		if ("ontouchstart" in window) {
 			this.renderer.domElement.addEventListener("touchmove",(event:any) => {
 				event.preventDefault(); 
