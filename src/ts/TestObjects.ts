@@ -22,7 +22,6 @@ class TestObjects{
 
 		if(!spMode){
 			this.groups.push(this.getVideoImagePlane());
-
 		}
 		
 		for(var id in this.groups){
@@ -114,6 +113,8 @@ class TestObjects{
 
 	onUpdate() {
 		//loop updateの中で実行
+		if( this.current != 1 )
+			return;
 		if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
 			this.videoImageContext.drawImage(this.video, 0, 0);
 			if (this.videoTexture) {
