@@ -23,7 +23,6 @@ class Main {
 	private camera:THREE.PerspectiveCamera;
 	private renderer:THREE.WebGLRenderer
 	private composer:THREE.EffectComposer;
-	private controller:RoundCameraController;
 
 	private effects: { [key:string]:IShaderMap} = {};
 	private effectList: IShaderMap[] = [];
@@ -130,10 +129,6 @@ class Main {
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		document.getElementById('canvas-wrapper').appendChild(this.renderer.domElement);
 
-		if( !this.spMode ){
-			this.controller = new RoundCameraController(this.camera, this.renderer.domElement);;
-		}
-
 		this.initObjects();
 
 
@@ -159,10 +154,6 @@ class Main {
 				//  マウス位置を更新
 				this.uzumaki.setMousePos(this.mouseX,this.mouseY);
 				this.bokashi.setMousePos(this.mouseX,this.mouseY);
-
-				if( !this.spMode ){
-					this.controller.update();
-				}
 
 				this.objects.onUpdate();
 		};
