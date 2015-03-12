@@ -24,10 +24,12 @@ canvas {
     padding:1em 1em 0.25em;
     border-radius:5px;
 }
+
 #object_change{
     border-top:1px #666 solid;
     position:relative;
 }
+
 #object_change label{
     margin:10px;
 }
@@ -36,4 +38,8 @@ canvas {
     #shader_select_menu{
         zoom:0.5;
     }
+}
+#webgl_no_supported{
+    display:none;
+    color:#c6c8c8;
 }
