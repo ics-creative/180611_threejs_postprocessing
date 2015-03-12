@@ -447,12 +447,12 @@ var TestObjects = (function () {
         }
         this.current = 0;
     }
-    TestObjects.prototype.change = function () {
+    TestObjects.prototype.change = function (type) {
         if (this.current == 1) {
             this.video.pause();
         }
         this.groups[this.current].visible = false;
-        this.current++;
+        this.current = type;
         if (this.current >= this.groups.length) {
             this.current = 0;
         }
@@ -519,12 +519,55 @@ var Main = (function () {
         this.effectList = [];
     }
     Main.prototype.initialize = function () {
+        this.initVue();
         this.checkSpMode();
         this.startScene();
         this.initMouse();
     };
-    Main.prototype.changeScene = function () {
-        this.objects.change();
+    Main.prototype.initVue = function () {
+        var _this = this;
+        this.vm = new Vue({
+            el: '#myapp',
+            data: {
+                shader_change_buttons: [
+                    { name: 'リセット', id: 'reset', value: false },
+                    { name: 'ネガポジ反転', id: 'nega', value: false },
+                    { name: 'セピア調', id: 'sepia_tone', value: false },
+                    { name: 'モザイク(風)', id: 'mosaic', value: false },
+                    { name: '拡散', id: 'diffusion', value: false },
+                    { name: 'うずまき', id: 'uzumaki', value: false },
+                    { name: '2値化(threshold)', id: 'threshold', value: false },
+                    { name: '2値化(ランダムディザ)', id: 'random_dither', value: false },
+                    { name: '2値化(ベイヤーディザ)', id: 'bayer_dither', value: false }
+                ],
+                image_change_buttons: [
+                    { name: '画像', id: 0 },
+                    { name: 'ビデオ', id: 1 }
+                ],
+                white: "whiteStyle",
+                vueApp: "vueApplication"
+            },
+            methods: {
+                _onClick: function (e) {
+                    if (e.targetVM.id == "reset") {
+                        _this.resetShader();
+                        for (var i = 0; i < _this.vm.data["shader_change_buttons"].length; i++) {
+                            _this.vm.data["shader_change_buttons"][i].value = false;
+                        }
+                    }
+                    else {
+                        e.targetVM.value = !e.targetVM.value;
+                        _this.changeShader(e.targetVM.id, e.targetVM.value);
+                    }
+                },
+                _onRadioClick: function (e) {
+                    _this.changeScene(e.targetVM.id);
+                }
+            }
+        });
+    };
+    Main.prototype.changeScene = function (type) {
+        this.objects.change(type);
     };
     Main.prototype.initMouse = function () {
         var _this = this;

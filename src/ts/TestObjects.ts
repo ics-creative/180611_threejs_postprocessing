@@ -30,7 +30,7 @@ class TestObjects {
         this.current = 0;
     }
 
-    change() {
+    change(type:number) {
 
 
         if (this.current == 1) {
@@ -38,7 +38,7 @@ class TestObjects {
         }
 
         this.groups[this.current].visible = false;
-        this.current++;
+        this.current = type;
         if (this.current >= this.groups.length) {
             this.current = 0;
         }

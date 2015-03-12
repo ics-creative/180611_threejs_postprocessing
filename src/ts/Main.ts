@@ -37,17 +37,64 @@ class Main {
 
     private uzumaki:shader.UzumakiShader;
     private spMode:boolean;
+    private vm:Vue;
 
     private objects:TestObjects;
 
     initialize() {
+        this.initVue();
         this.checkSpMode();
         this.startScene();
         this.initMouse();
     }
 
-    changeScene() {
-        this.objects.change();
+    initVue(){
+
+        // v-repeat
+        this.vm = new Vue({
+            el: '#myapp',
+            data: {
+                shader_change_buttons: [
+                    {name:'リセット', id:'reset',value:false},
+                    {name:'ネガポジ反転', id:'nega',value:false},
+                    {name:'セピア調', id:'sepia_tone',value:false},
+                    {name:'モザイク(風)', id:'mosaic',value:false},
+                    {name:'拡散', id:'diffusion',value:false},
+                    {name:'うずまき', id:'uzumaki',value:false},
+                    {name:'2値化(threshold)', id:'threshold',value:false},
+                    {name:'2値化(ランダムディザ)', id:'random_dither',value:false},
+                    {name:'2値化(ベイヤーディザ)', id:'bayer_dither',value:false}
+                ],
+                image_change_buttons: [
+                    {name:'画像', id:0},
+                    {name:'ビデオ', id:1}
+                ],
+                white:"whiteStyle",
+                vueApp:"vueApplication"
+            },
+
+            methods: {
+                _onClick: (e) => {
+                    if(e.targetVM.id == "reset" ) {
+                        this.resetShader();
+                        for(var i = 0; i < this.vm.data["shader_change_buttons"].length; i ++ ) {
+                            this.vm.data["shader_change_buttons"][i].value = false;
+                        }
+                    } else {
+                        e.targetVM.value = !e.targetVM.value;
+                        this.changeShader( e.targetVM.id,e.targetVM.value );
+                    }
+                },
+                _onRadioClick:(e) =>{
+                    this.changeScene( e.targetVM.id );
+                }
+            }
+
+        });
+    }
+
+    changeScene(type:number) {
+        this.objects.change(type);
     }
 
     initMouse() {
