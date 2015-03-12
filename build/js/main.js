@@ -497,7 +497,8 @@ var TestObjects = (function () {
         this.video = document.createElement('video');
         this.video.src = "texture/BigBuckBunny_320x180.mp4";
         this.video.load();
-        this.video.play();
+        this.video.pause();
+        this.video.volume = 0;
         this.video.loop = true;
         var videoImage = document.createElement('canvas');
         videoImage.width = 480;
@@ -511,7 +512,7 @@ var TestObjects = (function () {
         var movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.DoubleSide });
         var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
         var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-        movieScreen.position.x = -1.68;
+        movieScreen.position.x = 1.68;
         movieScreen.scale.x = movieScreen.scale.y = 5;
         var group = new THREE.Group();
         group.add(movieScreen);
