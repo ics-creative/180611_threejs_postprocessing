@@ -20,33 +20,39 @@
     <title>ピクセルシェーダーデモ</title>
 </head>
 
-<body class="dark">
-<div id="canvas-wrapper"></div>
-<div id="myapp">
-    <div id="shader_select_menu">
+<body>
+    <div id="canvas-wrapper"></div>
+    <div id="myapp">
+        <div id="shader_select_menu">
 
-        <label class="shader_checkbox topcoat-checkbox" v-repeat="shader_change_buttons" v-on="change: _onClick"
-               style="display:block;">
-            <input type="checkbox">
-
-            <div class="topcoat-checkbox__checkmark"></div>
-            {{name}}
-        </label>
-
-        <div id="object_change">
-            <label class="topcoat-radio-button" v-repeat="image_change_buttons">
-                <input type="radio" name="topcoat" v-on="click: _onRadioClick" v-model="picked" value="{{value}}">
-
-                <div class="topcoat-radio-button__checkmark"></div>
+            <label class="shader_checkbox topcoat-checkbox" v-repeat="shader_change_buttons" v-on="change: _onClick" style="display:block;">
+                <input type="checkbox">
+                <div class="topcoat-checkbox__checkmark"></div>
                 {{name}}
             </label>
-        </div>
-    </div>
 
-</div>
-<script>
-    var main = new Main();
-    main.initialize();
-</script>
+            <div id="object_change">
+                <label class="topcoat-radio-button" v-repeat="image_change_buttons">
+                    <input type="radio" name="topcoat" v-on="click: _onRadioClick" v-model="picked" value="{{value}}">
+
+                    <div class="topcoat-radio-button__checkmark"></div>
+                    {{name}}
+                </label>
+            </div>
+        </div>
+
+    </div>
+    <div id="webgl_no_supported" style="display:none">WebGLをサポートしていません</div>
+    <script>
+        if( Main.canWebGL() ) {
+            var main = new Main();
+            main.initialize();
+        } else {
+            var myapp = document.getElementById('myapp').style.display = 'none';
+            document.getElementById('canvas-wrapper').style.display = 'none';
+            var nosuported = document.getElementById('webgl_no_supported');
+            nosuported.style.display = 'block';
+        }
+    </script>
 </body>
 </html>
