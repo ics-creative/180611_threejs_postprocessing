@@ -64,8 +64,8 @@ class Main {
                 shader_change_buttons: [
                     {name: 'ネガポジ反転', id: 'nega', value: false},
                     {name: 'セピア調', id: 'sepia_tone', value: false},
-                    {name: 'モザイク(風)', id: 'mosaic', value: false},
-                    {name: '拡散', id: 'diffusion', value: false},
+                    {name: 'モザイク', id: 'mosaic', value: false},
+                    {name: 'すりガラス', id: 'diffusion', value: false},
                     {name: 'うずまき', id: 'uzumaki', value: false},
                     {name: '2値化(threshold)', id: 'threshold', value: false},
                     {name: '2値化(ランダムディザ)', id: 'random_dither', value: false},
