@@ -481,7 +481,8 @@ var TestObjects = (function () {
         var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
         var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
         movieScreen.position.x = 1.68;
-        movieScreen.scale.x = movieScreen.scale.y = 5;
+        movieScreen.position.y = -0.23;
+        movieScreen.scale.x = movieScreen.scale.y = 5.0;
         var group = new THREE.Group();
         group.add(movieScreen);
         group.visible = false;
@@ -494,7 +495,7 @@ var TestObjects = (function () {
         var geometry = new THREE.PlaneGeometry(1.5, 1.0, 1, 1);
         var material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
         var mesh = new THREE.Mesh(geometry, material);
-        mesh.scale.x = mesh.scale.y = 3.5;
+        mesh.scale.x = mesh.scale.y = 4.7;
         group.add(mesh);
         group.visible = true;
         return group;

@@ -82,8 +82,9 @@ class TestObjects{
 		var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
 
 		movieScreen.position.x = 1.68;
+		movieScreen.position.y = -0.23;
 
-		movieScreen.scale.x = movieScreen.scale.y = 5;
+		movieScreen.scale.x = movieScreen.scale.y = 5.0;
 		var group:THREE.Group = new THREE.Group();
 		group.add(movieScreen);
 
@@ -104,7 +105,7 @@ class TestObjects{
 
 		var mesh:THREE.Mesh = new THREE.Mesh( geometry, material );
 
-		mesh.scale.x = mesh.scale.y = 3.5;
+		mesh.scale.x = mesh.scale.y = 4.7;
 		group.add(mesh);
 
 		group.visible = true;
