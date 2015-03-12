@@ -78,14 +78,14 @@ class TestObjects{
 
 		//生成したvideo textureをmapに指定し、overdrawをtureにしてマテリアルを生成
 		var movieMaterial = new THREE.MeshBasicMaterial(  { map:this.videoTexture, side: THREE.DoubleSide } );//{map: this.videoTexture, overdraw: true, side:THREE.DoubleSide});
-var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
-var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
+		var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
+		var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
 
-movieScreen.position.x = 1.68;
+		movieScreen.position.x = 1.68;
 
-movieScreen.scale.x = movieScreen.scale.y = 5;
-var group:THREE.Group = new THREE.Group();
-group.add(movieScreen);
+		movieScreen.scale.x = movieScreen.scale.y = 5;
+		var group:THREE.Group = new THREE.Group();
+		group.add(movieScreen);
 
 		//movieScreen.rotation.y = THREE.Math.degToRad(180);
 
