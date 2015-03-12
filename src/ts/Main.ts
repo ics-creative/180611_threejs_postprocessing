@@ -55,7 +55,6 @@ class Main {
             el: '#myapp',
             data: {
                 shader_change_buttons: [
-                    {name:'リセット', id:'reset',value:false},
                     {name:'ネガポジ反転', id:'nega',value:false},
                     {name:'セピア調', id:'sepia_tone',value:false},
                     {name:'モザイク(風)', id:'mosaic',value:false},
@@ -66,9 +65,10 @@ class Main {
                     {name:'2値化(ベイヤーディザ)', id:'bayer_dither',value:false}
                 ],
                 image_change_buttons: [
-                    {name:'画像', id:0},
-                    {name:'ビデオ', id:1}
+                    {name:'画像', id:0,value:'image'},
+                    {name:'ビデオ', id:1,value:'video'}
                 ],
+                picked:'image',
                 white:"whiteStyle",
                 vueApp:"vueApplication"
             },

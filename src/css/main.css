@@ -1,32 +1,39 @@
-
-body { 
-	margin: 0; 
+body {
+    margin: 0;
 }
 canvas {
-	width: 100%;
-	height: 100%; 
-	position:absolute; 
+    width: 100%;
+    height: 100%;
+    position:absolute;
 }
 #myapp{
-	width: 100%;
-	height: 100%; 
+    width: 100%;
+    height: 100%;
+}
+
+.shader_checkbox{
+    margin-bottom:0.75em;
+    color:#F0F1F1
 }
 
 #shader_select_menu{
-	position:absolute;
-	left:10px;
-	top:20px;
+    position:absolute;
+    left:10px;
+    top:20px;
+    background-color:RGBA(0,0,0,0.7);
+    padding:1em 1em 0.25em;
+    border-radius:5px;
 }
 #object_change{
-
-	left:100%;
-	top:100%;
-	background-color:#454646;
-	
-	margin: -80px 0 0 -110px;
-	position:absolute;
+    border-top:1px #666 solid;
+    position:relative;
 }
 #object_change label{
+    margin:10px;
+}
 
-	margin:10px;
+@media screen and (max-width: 480px){
+    #shader_select_menu{
+        zoom:0.5;
+    }
 }

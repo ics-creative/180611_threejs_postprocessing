@@ -480,9 +480,9 @@ var TestObjects = (function () {
         var movieMaterial = new THREE.MeshBasicMaterial({ map: this.videoTexture, side: THREE.DoubleSide });
         var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
         var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-        movieScreen.position.x = 1.68;
-        movieScreen.position.y = -0.23;
-        movieScreen.scale.x = movieScreen.scale.y = 5.0;
+        movieScreen.position.x = 1.85;
+        movieScreen.position.y = -0.25;
+        movieScreen.scale.x = movieScreen.scale.y = 5.5;
         var group = new THREE.Group();
         group.add(movieScreen);
         group.visible = false;
@@ -495,7 +495,7 @@ var TestObjects = (function () {
         var geometry = new THREE.PlaneGeometry(1.5, 1.0, 1, 1);
         var material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
         var mesh = new THREE.Mesh(geometry, material);
-        mesh.scale.x = mesh.scale.y = 4.7;
+        mesh.scale.x = mesh.scale.y = 6.0;
         group.add(mesh);
         group.visible = true;
         return group;
@@ -518,6 +518,15 @@ var Main = (function () {
         this.effects = {};
         this.effectList = [];
     }
+    Main.canWebGL = function () {
+        try {
+            return !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+        }
+        catch (e) {
+            return false;
+        }
+        return true;
+    };
     Main.prototype.initialize = function () {
         this.initVue();
         this.checkSpMode();
@@ -530,7 +539,6 @@ var Main = (function () {
             el: '#myapp',
             data: {
                 shader_change_buttons: [
-                    { name: 'リセット', id: 'reset', value: false },
                     { name: 'ネガポジ反転', id: 'nega', value: false },
                     { name: 'セピア調', id: 'sepia_tone', value: false },
                     { name: 'モザイク(風)', id: 'mosaic', value: false },
@@ -541,9 +549,10 @@ var Main = (function () {
                     { name: '2値化(ベイヤーディザ)', id: 'bayer_dither', value: false }
                 ],
                 image_change_buttons: [
-                    { name: '画像', id: 0 },
-                    { name: 'ビデオ', id: 1 }
+                    { name: '画像', id: 0, value: 'image' },
+                    { name: 'ビデオ', id: 1, value: 'video' }
                 ],
+                picked: 'image',
                 white: "whiteStyle",
                 vueApp: "vueApplication"
             },
@@ -599,7 +608,6 @@ var Main = (function () {
         if (this.spMode) {
             var changeButton = document.getElementById('object_change');
             changeButton.style.display = 'none';
-            changeButton.style.visibility = 'hidden';
         }
     };
     Main.prototype.resetShader = function () {

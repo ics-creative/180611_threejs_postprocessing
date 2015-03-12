@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-	<meta charset="utf-8">
-	<meta name="description" content="three.jsでのピクセルシェーダーデモ">
-	<meta name="author" content="Nozomi Nohara">
-	<meta name="viewport" content="width=device-width"  initial-scale="1" >
-	<link rel="shortcut icon" href="">
-	<script src="js/three.js"></script>
+    <meta charset="utf-8">
+    <meta name="description" content="three.jsでのピクセルシェーダーデモ">
+    <meta name="author" content="Nozomi Nohara">
+    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <link rel="shortcut icon" href="">
+    <script src="js/three.js"></script>
     <script src="js/shaders/CopyShader.js"></script>
     <script src="js/postprocessing/MaskPass.js"></script>
     <script src="js/postprocessing/RenderPass.js"></script>
     <script src="js/postprocessing/EffectComposer.js"></script>
     <script src="js/postprocessing/ShaderPass.js"></script>
-	<script src="js/vue.min.js"></script>
-	<script src="js/main.js"></script>
+    <script src="js/vue.min.js"></script>
+    <script src="js/main.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="css/main.css" media="all">
-	<link rel="stylesheet" type="text/css" href="css/topcoat-desktop-dark.min.css" media="all">
-	<title>ピクセルシェーダーデモ</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="all">
+    <link rel="stylesheet" type="text/css" href="css/topcoat-desktop-dark.min.css" media="all">
+    <title>ピクセルシェーダーデモ</title>
 </head>
 
-<body>
-	<div id="canvas-wrapper"></div>
-	<div id="myapp" >
-		<div id="shader_select_menu">     
-			
-	            <button class="topcoat-button--large" v-repeat="shader_change_buttons"  v-on="click: _onClick">{{value?"✓":""}}{{name}}</button>
-	    </div>
+<body class="dark">
+<div id="canvas-wrapper"></div>
+<div id="myapp">
+    <div id="shader_select_menu">
 
-        <div  id="object_change">
+        <label class="shader_checkbox topcoat-checkbox" v-repeat="shader_change_buttons" v-on="change: _onClick"
+               style="display:block;">
+            <input type="checkbox">
+
+            <div class="topcoat-checkbox__checkmark"></div>
+            {{name}}
+        </label>
+
+        <div id="object_change">
             <label class="topcoat-radio-button" v-repeat="image_change_buttons">
-                <input type="radio" name="topcoat" v-on="click: _onRadioClick">
+                <input type="radio" name="topcoat" v-on="click: _onRadioClick" v-model="picked" value="{{value}}">
+
                 <div class="topcoat-radio-button__checkmark"></div>
                 {{name}}
             </label>
-            </div>
-	</div>
-	<script>
-		var main = new Main();
-		main.initialize();
-	</script>
+        </div>
+    </div>
+
+</div>
+<script>
+    var main = new Main();
+    main.initialize();
+</script>
 </body>
 </html>
