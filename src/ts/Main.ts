@@ -7,192 +7,195 @@
  * https://github.com/ics-nohara/threejs_postprocessing_demo
  * @author Nozomi Nohara / https://github.com/ics-nohara
  */
-interface Window{
-	superagent:any;
+interface Window {
+    superagent:any;
 }
 
 interface IShaderMap {
-	material:shader.IShader;
-	pass:THREE.ShaderPass;
+    material:shader.IShader;
+    pass:THREE.ShaderPass;
 }
 
 class Main {
 
-	constructor() {
-	}
+    constructor() {
+    }
 
-	private vertexShader:string;
-	private currentSelection:string;
-	
-	private scene:THREE.Scene;
-	private camera:THREE.PerspectiveCamera;
-	private renderer:THREE.WebGLRenderer
-	private composer:THREE.EffectComposer;
+    private vertexShader:string;
+    private currentSelection:string;
 
-	private effects: { [key:string]:IShaderMap} = {};
-	private effectList: IShaderMap[] = [];
-	private normalRenderMode:boolean;
-	private mouseX:number;
-	private mouseY:number;
+    private scene:THREE.Scene;
+    private camera:THREE.PerspectiveCamera;
+    private renderer:THREE.WebGLRenderer
+    private composer:THREE.EffectComposer;
 
-	private uzumaki:shader.UzumakiShader;
-	private spMode:boolean;
+    private effects:{ [key:string]:IShaderMap} = {};
+    private effectList:IShaderMap[] = [];
+    private normalRenderMode:boolean;
+    private mouseX:number;
+    private mouseY:number;
 
-	private objects:TestObjects;
+    private uzumaki:shader.UzumakiShader;
+    private spMode:boolean;
 
-	initialize() {
-		this.checkSpMode();
-		this.startScene();
-		this.initMouse();
-	}
-	changeScene(){
-		this.objects.change();
-	}
+    private objects:TestObjects;
 
-	initMouse() {
-		if ("ontouchstart" in window) {
-			this.renderer.domElement.addEventListener("touchmove",(event:any) => {
-				event.preventDefault(); 
-				this.mouseX = event.changedTouches[0].pageX ;
-				this.mouseY = event.changedTouches[0].pageY ;
-				
-				});
-		}
-		document.addEventListener("mousemove",(event) => {
-			this.mouseX = event.pageX;
-			this.mouseY = event.pageY;
-			});
+    initialize() {
+        this.checkSpMode();
+        this.startScene();
+        this.initMouse();
+    }
 
-	}
+    changeScene() {
+        this.objects.change();
+    }
 
-	isIphone() {
-		return  (navigator.userAgent.indexOf('iPhone') > 0 &&
-			navigator.userAgent.indexOf('iPad') == -1) ||
-		navigator.userAgent.indexOf('iPod') > 0 ;
-	}
-	checkSpMode() {
+    initMouse() {
+        if ("ontouchstart" in window) {
+            this.renderer.domElement.addEventListener("touchmove", (event:any) => {
+                event.preventDefault();
+                this.mouseX = event.changedTouches[0].pageX;
+                this.mouseY = event.changedTouches[0].pageY;
 
-		if (this.isIphone() || navigator.userAgent.indexOf('Android') > 0) 
-		{
-			this.spMode = true;
-			} else {
-				this.spMode = false;
-			}
+            });
+        }
+        document.addEventListener("mousemove", (event) => {
+            this.mouseX = event.pageX;
+            this.mouseY = event.pageY;
+        });
 
-		}
+    }
 
-	initObjects() {
-		this.objects = new TestObjects(this.scene,this.renderer,this.spMode);
-		if(this.spMode){
-			var changeButton = document.getElementById('object_change');
+    isIphone() {
+        return (navigator.userAgent.indexOf('iPhone') > 0 &&
+            navigator.userAgent.indexOf('iPad') == -1) ||
+            navigator.userAgent.indexOf('iPod') > 0;
+    }
 
-			changeButton.style.display = 'none'; //or
-			changeButton.style.visibility = 'hidden';
-		}
-	}
-	resetShader() {
-		this.normalRenderMode = true;
+    checkSpMode() {
 
-		for(var i = 0;i < this.effectList.length ; i ++ ){
-			this.effectList[i].pass.enabled = false;
-			this.effectList[i].pass.renderToScreen = false;
-		}
-	}
+        if (this.isIphone() || navigator.userAgent.indexOf('Android') > 0) {
+            this.spMode = true;
+        } else {
+            this.spMode = false;
+        }
 
-	changeShader(id:string,value:boolean) {
+    }
 
-		this.normalRenderMode = false;
-		this.effects[id].pass.enabled = value;
+    initObjects() {
+        this.objects = new TestObjects(this.scene, this.renderer, this.spMode);
+        if (this.spMode) {
+            var changeButton = document.getElementById('object_change');
 
-		var renderToScreen:boolean = false;
-		for(var i = this.effectList.length - 1; i >= 0 ; i--){
+            changeButton.style.display = 'none'; //or
+            changeButton.style.visibility = 'hidden';
+        }
+    }
 
-			if( this.effectList[i].pass.enabled && !renderToScreen) {
-				this.effectList[i].pass.renderToScreen = true;
-				renderToScreen = true;
-				} else {
-					this.effectList[i].pass.renderToScreen = false;
-				}
+    resetShader() {
+        this.normalRenderMode = true;
 
-			}
-			if( !renderToScreen ) {
-				this.normalRenderMode = true;
-			}
-		}
+        for (var i = 0; i < this.effectList.length; i++) {
+            this.effectList[i].pass.enabled = false;
+            this.effectList[i].pass.renderToScreen = false;
+        }
+    }
 
+    changeShader(id:string, value:boolean) {
 
-	startScene() {
+        this.normalRenderMode = false;
+        this.effects[id].pass.enabled = value;
 
-		//  ThreeeJSの初期化処理
-		this.scene = new THREE.Scene();
-		this.camera = new THREE.PerspectiveCamera(77, window.innerWidth / window.innerHeight, 0.1, 1000);
-		this.renderer = new THREE.WebGLRenderer({antialias: true});
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		this.renderer.setPixelRatio( window.devicePixelRatio );
-		document.getElementById('canvas-wrapper').appendChild(this.renderer.domElement);
+        var renderToScreen:boolean = false;
+        for (var i = this.effectList.length - 1; i >= 0; i--) {
 
-		this.initObjects();
+            if (this.effectList[i].pass.enabled && !renderToScreen) {
+                this.effectList[i].pass.renderToScreen = true;
+                renderToScreen = true;
+            } else {
+                this.effectList[i].pass.renderToScreen = false;
+            }
+
+        }
+        if (!renderToScreen) {
+            this.normalRenderMode = true;
+        }
+    }
 
 
-		// postprocessing
-		this.composer = new THREE.EffectComposer( this.renderer );
-		this.composer.addPass( new THREE.RenderPass( this.scene, this.camera ) );
+    startScene() {
 
-		this.addShaders();
-		this.normalRenderMode = true;
+        //  ThreeeJSの初期化処理
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(77, window.innerWidth / window.innerHeight, 0.1, 1000);
+        this.renderer = new THREE.WebGLRenderer({antialias: true});
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        document.getElementById('canvas-wrapper').appendChild(this.renderer.domElement);
 
-		this.camera.position.z = 3;
+        this.initObjects();
 
-		var render = () => {
-			requestAnimationFrame(render);
 
-			if( this.normalRenderMode ) {
-				this.renderer.render(this.scene, this.camera);
-				} else {
-					this.composer.render();
-				}
-				
-				
-				//  マウス位置を更新
-				this.uzumaki.setMousePos(this.mouseX,this.mouseY);
+        // postprocessing
+        this.composer = new THREE.EffectComposer(this.renderer);
+        this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
 
-				this.objects.onUpdate();
-		};
-		render();
+        this.addShaders();
+        this.normalRenderMode = true;
 
-	}
+        this.camera.position.z = 3;
 
-	addShaders() {
-		var width = window.innerWidth;
-		var height = window.innerHeight;
-		this.addEffect( "nega",             new shader.NegativePositiveShader );
-		this.addEffect( "sepia_tone",       new shader.SepiaToneShader );
-		this.addEffect( "mosaic",           new shader.MosaicShader(width,height));
-		this.addEffect( "diffusion",        new shader.DiffusionShader(width,height));
+        var render = () => {
+            requestAnimationFrame(render);
 
-		this.addEffect( "uzumaki", this.uzumaki =  new shader.UzumakiShader(width,height));
-		this.uzumaki.uniforms = this.effects["uzumaki"].pass.uniforms;
+            if (this.normalRenderMode) {
+                this.renderer.render(this.scene, this.camera);
+            } else {
+                this.composer.render();
+            }
 
-		this.addEffect( "threshold",        new shader.ThresholdShader );
-		this.addEffect( "random_dither",    new shader.RandomDitherShader );
-		this.addEffect( "bayer_dither",     new shader.BayerDitherShader(width,height));
 
-		if(this.spMode) {
-			this.uzumaki.setUzumakiScale(75);
-			
-		}
-	}
+            //  マウス位置を更新
+            this.uzumaki.setMousePos(this.mouseX, this.mouseY);
 
-	addEffect(name:string,shader:shader.IShader){
+            this.objects.onUpdate();
+        };
+        render();
 
-		var pass = new THREE.ShaderPass( shader );
-		this.composer.addPass( pass );
-		pass.renderToScreen = false;
-		pass.enabled = false;
-		this.effects[name] = {material:shader,pass:pass};
+    }
 
-		//  順番用
-		this.effectList.push( this.effects[name] );
-	}
+    addShaders() {
+        var width = window.innerWidth;
+        var height = window.innerHeight;
+        this.addEffect("nega", new shader.NegativePositiveShader);
+        this.addEffect("sepia_tone", new shader.SepiaToneShader);
+        this.addEffect("mosaic", new shader.MosaicShader(width, height));
+        this.addEffect("diffusion", new shader.DiffusionShader(width, height));
 
-};
+        this.addEffect("uzumaki", this.uzumaki = new shader.UzumakiShader(width, height));
+        this.uzumaki.uniforms = this.effects["uzumaki"].pass.uniforms;
+
+        this.addEffect("threshold", new shader.ThresholdShader);
+        this.addEffect("random_dither", new shader.RandomDitherShader);
+        this.addEffect("bayer_dither", new shader.BayerDitherShader(width, height));
+
+        if (this.spMode) {
+            this.uzumaki.setUzumakiScale(75);
+
+        }
+    }
+
+    addEffect(name:string, shader:shader.IShader) {
+
+        var pass = new THREE.ShaderPass(shader);
+        this.composer.addPass(pass);
+        pass.renderToScreen = false;
+        pass.enabled = false;
+        this.effects[name] = {material: shader, pass: pass};
+
+        //  順番用
+        this.effectList.push(this.effects[name]);
+    }
+
+}
+;

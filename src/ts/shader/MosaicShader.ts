@@ -2,59 +2,60 @@
  * Mosaic
  * @author Nozomi Nohara / http://github.com/ics-nohara
  */
-module shader{
-	export class MosaicShader implements shader.IShader{
+module shader {
+    export class MosaicShader implements shader.IShader {
 
-	    constructor(width:number,height:number) {
-	    	this.setMosaicScale(10.0);
-	        this.setScreenSize(width,height);
-	    }
+        constructor(width:number, height:number) {
+            this.setMosaicScale(10.0);
+            this.setScreenSize(width, height);
+        }
 
-	    setScreenSize(width:number,height:number) {
-	        this.uniforms["vScreenSize"].value.x = width;
-	        this.uniforms["vScreenSize"].value.y = height;
-	    }
+        setScreenSize(width:number, height:number) {
+            this.uniforms["vScreenSize"].value.x = width;
+            this.uniforms["vScreenSize"].value.y = height;
+        }
 
-	    setMosaicScale(scale:number){
-	        this.uniforms["fMosaicScale"].value = scale;
-	    }
+        setMosaicScale(scale:number) {
+            this.uniforms["fMosaicScale"].value = scale;
+        }
 
-		uniforms: { [key:string]:IShaderUniforms} = {
-			"tDiffuse": { type: "t", value: null },
-			"vScreenSize":	{ type:"v2",value:new THREE.Vector2(0.0,0.0)},
-			"fMosaicScale":{type:"f",value:null}
- 		};
+        uniforms:{ [key:string]:IShaderUniforms} = {
+            "tDiffuse": {type: "t", value: null},
+            "vScreenSize": {type: "v2", value: new THREE.Vector2(0.0, 0.0)},
+            "fMosaicScale": {type: "f", value: null}
+        };
 
-		vertexShader: string = [
+        vertexShader:string = [
 
-			"varying vec2 vUv;",
+            "varying vec2 vUv;",
 
-			"void main() {",
+            "void main() {",
 
-				"vUv = uv;",
-				"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+            "vUv = uv;",
+            "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
-			"}"
+            "}"
 
-		].join("\n");
+        ].join("\n");
 
-		fragmentShader: string = [
-			"varying vec2 vUv;",
-			"uniform sampler2D tDiffuse;",
-			"uniform vec2 vScreenSize;",
-			"uniform float fMosaicScale;",
+        fragmentShader:string = [
+            "varying vec2 vUv;",
+            "uniform sampler2D tDiffuse;",
+            "uniform vec2 vScreenSize;",
+            "uniform float fMosaicScale;",
 
-			"void main() {",
+            "void main() {",
 
-			 "vec2 vUv2 = vUv;",
+            "vec2 vUv2 = vUv;",
 
-			    "vUv2.x = floor(vUv2.x  * vScreenSize.x / fMosaicScale) / (vScreenSize.x / fMosaicScale) + (fMosaicScale/2.0) / vScreenSize.x;",
-			    "vUv2.y = floor(vUv2.y  * vScreenSize.y / fMosaicScale) / (vScreenSize.y / fMosaicScale) + (fMosaicScale/2.0) / vScreenSize.y;",
+            "vUv2.x = floor(vUv2.x  * vScreenSize.x / fMosaicScale) / (vScreenSize.x / fMosaicScale) + (fMosaicScale/2.0) / vScreenSize.x;",
+            "vUv2.y = floor(vUv2.y  * vScreenSize.y / fMosaicScale) / (vScreenSize.y / fMosaicScale) + (fMosaicScale/2.0) / vScreenSize.y;",
 
-			    "vec4 color = texture2D(tDiffuse, vUv2);",
-			    "gl_FragColor = color;",
-			"}"
-		].join("\n");
+            "vec4 color = texture2D(tDiffuse, vUv2);",
+            "gl_FragColor = color;",
+            "}"
+        ].join("\n");
 
-	};
+    }
+    ;
 }

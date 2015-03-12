@@ -2,16 +2,16 @@
  * シェーダー定義用のファイルです
  * @author Nozomi Nohara / http://github.com/ics-nohara
  */
-module shader{
+module shader {
 
-	export interface IShaderUniforms {
-		type:string;
-		value:any;
-	}
+    export interface IShaderUniforms {
+        type:string;
+        value:any;
+    }
 
-	export interface IShader{
-		vertexShader: string;
-		uniforms: { [key:string]:IShaderUniforms };
-		fragmentShader: string;
-	}
+    export interface IShader {
+        vertexShader: string;
+        uniforms: { [key:string]:IShaderUniforms };
+        fragmentShader: string;
+    }
 }
