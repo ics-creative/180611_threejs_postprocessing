@@ -21,8 +21,7 @@ export class Main {
 
   initialize() {
     this.initVue();
-    this.checkSpMode();
-    this.startScene();
+    this.init3d();
     this.initMouse();
   }
 
@@ -50,7 +49,6 @@ export class Main {
       },
       methods: {
         onChangeShaderCheckbox: item => {
-          console.log(item);
           item.value = !item.value;
           this.changeShader(item.id, item.value);
         },
@@ -79,22 +77,6 @@ export class Main {
       this.mouseX = event.pageX;
       this.mouseY = event.pageY;
     });
-  }
-
-  isIphone() {
-    return (
-      (navigator.userAgent.indexOf("iPhone") > 0 &&
-        navigator.userAgent.indexOf("iPad") == -1) ||
-      navigator.userAgent.indexOf("iPod") > 0
-    );
-  }
-
-  checkSpMode() {
-    if (this.isIphone() || navigator.userAgent.indexOf("Android") > 0) {
-      this.spMode = true;
-    } else {
-      this.spMode = false;
-    }
   }
 
   initObjects() {
@@ -130,8 +112,8 @@ export class Main {
     }
   }
 
-  startScene() {
-    //  ThreeeJSの初期化処理
+  init3d() {
+    //  Three.jsの初期化処理
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(
       77,
@@ -140,6 +122,7 @@ export class Main {
       1000
     );
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     document
@@ -152,18 +135,22 @@ export class Main {
     this.addShaders();
     this.normalRenderMode = true;
     this.camera.position.z = 3;
-    const render = () => {
-      requestAnimationFrame(render);
-      if (this.normalRenderMode) {
-        this.renderer.render(this.scene, this.camera);
-      } else {
-        this.composer.render();
-      }
-      //  マウス位置を更新
-      this.uzumaki.setMousePos(this.mouseX, this.mouseY);
-      this.objects.onUpdate();
-    };
-    render();
+
+    this.render();
+  }
+
+  render() {
+    requestAnimationFrame(() => {
+      this.render();
+    });
+    if (this.normalRenderMode) {
+      this.renderer.render(this.scene, this.camera);
+    } else {
+      this.composer.render();
+    }
+    //  マウス位置を更新
+    this.uzumaki.setMousePos(this.mouseX, this.mouseY);
+    this.objects.onUpdate();
   }
 
   addShaders() {
@@ -173,17 +160,15 @@ export class Main {
     this.addEffect("sepia_tone", new SepiaToneShader());
     this.addEffect("mosaic", new MosaicShader(width, height));
     this.addEffect("diffusion", new DiffusionShader(width, height));
-    this.addEffect(
-      "uzumaki",
-      (this.uzumaki = new UzumakiShader(width, height))
-    );
+
+    this.uzumaki = new UzumakiShader(width, height);
+
+    this.addEffect("uzumaki", this.uzumaki);
     this.uzumaki.uniforms = this.effects["uzumaki"].pass.uniforms;
+
     this.addEffect("threshold", new ThresholdShader());
     this.addEffect("random_dither", new RandomDitherShader());
     this.addEffect("bayer_dither", new BayerDitherShader(width, height));
-    if (this.spMode) {
-      this.uzumaki.setUzumakiScale(75);
-    }
   }
 
   addEffect(name, shader) {
