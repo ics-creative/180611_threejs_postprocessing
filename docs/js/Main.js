@@ -8,22 +8,15 @@ import { ThresholdShader } from "./shader/ThresholdShader.js";
 import { UzumakiShader } from "./shader/UzumakiShader.js";
 import { TestObjects } from "./TestObjects.js";
 
+window.addEventListener("DOMContentLoaded", () => {
+  const main = new Main();
+  main.initialize();
+});
+
 export class Main {
   constructor() {
     this.effects = {};
     this.effectList = [];
-  }
-
-  static canWebGL() {
-    try {
-      return (
-        !!window.WebGLRenderingContext &&
-        !!document.createElement("canvas").getContext("experimental-webgl")
-      );
-    } catch (e) {
-      return false;
-    }
-    return true;
   }
 
   initialize() {
@@ -35,45 +28,36 @@ export class Main {
 
   initVue() {
     // v-repeat
-    this.vm = new Vue({
+    new Vue({
       el: "#myapp",
       data: {
-        shader_change_buttons: [
+        shaderTypes: [
           { name: "ネガポジ反転", id: "nega", value: false },
           { name: "セピア調", id: "sepia_tone", value: false },
           { name: "モザイク", id: "mosaic", value: false },
           { name: "すりガラス", id: "diffusion", value: false },
           { name: "うずまき", id: "uzumaki", value: false },
           { name: "2値化(threshold)", id: "threshold", value: false },
+          { name: "2値化(threshold)", id: "threshold", value: false },
           { name: "2値化(ランダムディザ)", id: "random_dither", value: false },
           { name: "2値化(ベイヤーディザ)", id: "bayer_dither", value: false }
         ],
-        image_change_buttons: [
+        targetTypes: [
           { name: "画像", id: 0, value: "image" },
           { name: "ビデオ", id: 1, value: "video" }
         ],
-        picked: "image",
-        white: "whiteStyle",
-        vueApp: "vueApplication"
+        picked: "image"
       },
       methods: {
-        _onClick: e => {
-          if (e.targetVM.id == "reset") {
-            this.resetShader();
-            for (
-              var i = 0;
-              i < this.vm.data["shader_change_buttons"].length;
-              i++
-            ) {
-              this.vm.data["shader_change_buttons"][i].value = false;
-            }
-          } else {
-            e.targetVM.value = !e.targetVM.value;
-            this.changeShader(e.targetVM.id, e.targetVM.value);
-          }
+        onChangeShaderCheckbox: item => {
+          console.log(item);
+          item.value = !item.value;
+          this.changeShader(item.id, item.value);
         },
-        _onRadioClick: e => {
-          this.changeScene(e.targetVM.id);
+        onChangeTargetRadio: item => {
+          console.log(item.value);
+          this.picked = item.value;
+          this.changeScene(item.id);
         }
       }
     });
@@ -116,14 +100,14 @@ export class Main {
   initObjects() {
     this.objects = new TestObjects(this.scene, this.renderer, this.spMode);
     if (this.spMode) {
-      var changeButton = document.getElementById("object_change");
+      const changeButton = document.getElementById("object_change");
       changeButton.style.display = "none";
     }
   }
 
   resetShader() {
     this.normalRenderMode = true;
-    for (var i = 0; i < this.effectList.length; i++) {
+    for (let i = 0; i < this.effectList.length; i++) {
       this.effectList[i].pass.enabled = false;
       this.effectList[i].pass.renderToScreen = false;
     }
@@ -132,8 +116,8 @@ export class Main {
   changeShader(id, value) {
     this.normalRenderMode = false;
     this.effects[id].pass.enabled = value;
-    var renderToScreen = false;
-    for (var i = this.effectList.length - 1; i >= 0; i--) {
+    let renderToScreen = false;
+    for (let i = this.effectList.length - 1; i >= 0; i--) {
       if (this.effectList[i].pass.enabled && !renderToScreen) {
         this.effectList[i].pass.renderToScreen = true;
         renderToScreen = true;
@@ -168,7 +152,7 @@ export class Main {
     this.addShaders();
     this.normalRenderMode = true;
     this.camera.position.z = 3;
-    var render = () => {
+    const render = () => {
       requestAnimationFrame(render);
       if (this.normalRenderMode) {
         this.renderer.render(this.scene, this.camera);
@@ -183,8 +167,8 @@ export class Main {
   }
 
   addShaders() {
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
     this.addEffect("nega", new NegativePositiveShader());
     this.addEffect("sepia_tone", new SepiaToneShader());
     this.addEffect("mosaic", new MosaicShader(width, height));
@@ -203,7 +187,7 @@ export class Main {
   }
 
   addEffect(name, shader) {
-    var pass = new THREE.ShaderPass(shader);
+    const pass = new THREE.ShaderPass(shader);
     this.composer.addPass(pass);
     pass.renderToScreen = false;
     pass.enabled = false;
@@ -211,16 +195,4 @@ export class Main {
     //  順番用
     this.effectList.push(this.effects[name]);
   }
-}
-
-console.log(Main.canWebGL());
-
-if (Main.canWebGL()) {
-  var main = new Main();
-  main.initialize();
-} else {
-  var myapp = (document.getElementById("myapp").style.display = "none");
-  document.getElementById("canvas-wrapper").style.display = "none";
-  var nosuported = document.getElementById("webgl_no_supported");
-  nosuported.style.display = "block";
 }

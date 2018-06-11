@@ -6,14 +6,13 @@
   <meta name="description" content="Three.jsでのピクセルシェーダーのサンプルです。"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google" content="notranslate"/>
-  <link rel="shortcut icon" href=""/>
   <script defer src="libs/three.js"></script>
   <script defer src="libs/shaders/CopyShader.js"></script>
   <script defer src="libs/postprocessing/MaskPass.js"></script>
   <script defer src="libs/postprocessing/RenderPass.js"></script>
   <script defer src="libs/postprocessing/EffectComposer.js"></script>
   <script defer src="libs/postprocessing/ShaderPass.js"></script>
-  <script defer src="libs/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
   <script defer src="js/Main.js" type="module"></script>
   <link rel="stylesheet" href="css/main.css"/>
 </head>
@@ -22,21 +21,22 @@
   <div id="canvas-wrapper"></div>
   <div id="myapp">
     <div id="shader_select_menu">
-      <label class="shader_checkbox"
-             v-repeat="shader_change_buttons"
-             v-on="change: _onClick"
-             style="display:block;">
-        <input type="checkbox">
-        {{name}}
-      </label>
+      <div v-for="item in shaderTypes">
+        <label>
+          <input type="checkbox"
+                 v-bind:selected="item.value === true"
+                 v-on:change="onChangeShaderCheckbox(item)">
+          {{item.name}}
+        </label>
+      </div>
 
       <div id="object_change">
-        <label v-repeat="image_change_buttons">
+        <label v-for="item in targetTypes">
           <input type="radio"
-                 v-on="click: _onRadioClick"
-                 v-model="picked"
-                 value="{{value}}">
-          {{name}}
+                 v-on:click="onChangeTargetRadio(item)"
+                 name="targetTypes"
+                 v-bind:checked="item.value === picked">
+          {{item.name}}
         </label>
       </div>
     </div>
