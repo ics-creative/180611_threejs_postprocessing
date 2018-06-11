@@ -7,22 +7,22 @@ uniform sampler2D tDiffuse;
 uniform vec2 vScreenSize;
 uniform vec2 vCenter;
 uniform float fBokashiScale;
+
 void main() {
-  if( length(vCenter-vUv*vScreenSize) >= fBokashiScale ) 
-  {
-    gl_FragColor = texture2D(tDiffuse,vUv);
+  if(length(vCenter - vUv * vScreenSize) >= fBokashiScale) {
+    gl_FragColor = texture2D(tDiffuse, vUv);
     return;
   }
-  vec4 color =  vec4(0.0,0.0,0.0,0.0);
+  vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+  
   const float count = 9.0;
-  float s = floor(count / 2.0 ) *  - 1.0;
-  for(int i = 0; i < int( count ) ;i++)
-  {
-    float x = (floor(vUv.x  * vScreenSize.x) +s + float(i)) / vScreenSize.x ;
-    for(int j=0;j<int( count ) ;j++)
-    {
-      float y = (floor(vUv.y  * vScreenSize.y) + s + float(j) ) / vScreenSize.y ;
-      color += texture2D(tDiffuse, vec2( x, y ) );
+  float s = floor(count / 2.0 ) * -1.0;
+  
+  for(int i = 0; i < int(count); i++) {
+    float x = (floor(vUv.x * vScreenSize.x) + s + float(i)) / vScreenSize.x;
+    for(int j = 0; j < int(count); j++) {
+      float y = (floor(vUv.y * vScreenSize.y) + s + float(j)) / vScreenSize.y;
+      color += texture2D(tDiffuse, vec2(x, y));
     }
   }
   gl_FragColor = color / float(count * count);
