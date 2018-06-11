@@ -1,5 +1,4 @@
 node_modules/
 .DS_Store
-BigBuckBunny_320x180.mp4
 .idea/
-/yarn.lock
+yarn.lock
