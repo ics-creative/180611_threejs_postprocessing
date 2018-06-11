@@ -3,33 +3,37 @@
  * 画面上に表示するオブジェクトをまとめたクラスです。
  */
 export class TestObjects {
-  constructor(scene, renderer, spMode) {
-    this.groups = [];
+  constructor(scene, renderer) {
     this.renderer = renderer;
-    this.groups.push(this.getImagePlane());
-    if (!spMode) {
-      this.groups.push(this.getVideoImagePlane());
-    }
-    for (var id in this.groups) {
-      scene.add(this.groups[id]);
-    }
-    this.current = 0;
+    this.meshImage = this.createImagePlane();
+    this.meshVideo = this.createVideoPlane();
+
+    scene.add(this.meshImage);
+    scene.add(this.meshVideo);
+
+    this.currentType = "image";
   }
+
   change(type) {
-    if (this.current == 1) {
-      this.video.pause();
+    this.currentType = type;
+
+    switch (type) {
+      case "video":
+        this.video.play();
+        this.meshImage.visible = false;
+        this.meshVideo.visible = true;
+        break;
+      case "image":
+        this.video.pause();
+        this.meshImage.visible = true;
+        this.meshVideo.visible = false;
+        break;
+      default:
+        throw new Error();
     }
-    this.groups[this.current].visible = false;
-    this.current = type;
-    if (this.current >= this.groups.length) {
-      this.current = 0;
-    }
-    if (this.current == 1) {
-      this.video.play();
-    }
-    this.groups[this.current].visible = true;
   }
-  getVideoImagePlane() {
+
+  createVideoPlane() {
     //video要素とそれをキャプチャするcanvas要素を生成
     this.video = document.createElement("video");
     this.video.src = "texture/BigBuckBunny_320x180.mp4";
@@ -37,55 +41,63 @@ export class TestObjects {
     this.video.pause();
     this.video.volume = 0;
     this.video.loop = true;
-    var videoImage = document.createElement("canvas");
-    videoImage.width = 480;
-    videoImage.height = 200;
-    this.videoImageContext = videoImage.getContext("2d");
-    this.videoImageContext.fillStyle = "#000000";
-    this.videoImageContext.fillRect(0, 0, videoImage.width, videoImage.height);
+
+    const canvas = document.createElement("canvas");
+    canvas.width = 320;
+    canvas.height = 180;
+
+    this.videoCanvasContext = canvas.getContext("2d");
+    this.videoCanvasContext.fillStyle = "#000000";
+    this.videoCanvasContext.fillRect(0, 0, canvas.width, canvas.height);
+
     //生成したcanvasをtextureとしてTHREE.Textureオブジェクトを生成
-    this.videoTexture = new THREE.Texture(videoImage);
+    this.videoTexture = new THREE.Texture(canvas);
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
+
     //生成したvideo textureをmapに指定し、overdrawをtureにしてマテリアルを生成
-    var movieMaterial = new THREE.MeshBasicMaterial({
+    const movieMaterial = new THREE.MeshBasicMaterial({
       map: this.videoTexture,
       side: THREE.DoubleSide
-    }); //{map: this.videoTexture, overdraw: true, side:THREE.DoubleSide});
-    var movieGeometry = new THREE.PlaneGeometry(2.0, 1.0, 1, 1);
-    var movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
-    movieScreen.position.x = 1.85;
-    movieScreen.position.y = -0.25;
-    movieScreen.scale.x = movieScreen.scale.y = 5.5;
-    var group = new THREE.Group();
+    });
+
+    const movieGeometry = new THREE.PlaneBufferGeometry(32, 18);
+    const movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
+    movieScreen.scale.setLength(0.5);
+
+    const group = new THREE.Group();
     group.add(movieScreen);
-    //movieScreen.rotation.y = THREE.Math.degToRad(180);
     group.visible = false;
     return group;
   }
-  getImagePlane() {
-    var group = new THREE.Group();
-    var texture = THREE.ImageUtils.loadTexture("texture/flower.jpg");
+
+  createImagePlane() {
+    const group = new THREE.Group();
+    const texture = new THREE.TextureLoader().load(
+      "texture/flower_1024x1024.jpg"
+    );
     texture.anisotropy = this.renderer.getMaxAnisotropy();
-    var geometry = new THREE.PlaneGeometry(1.5, 1.0, 1, 1);
-    var material = new THREE.MeshBasicMaterial({
+
+    const geometry = new THREE.PlaneBufferGeometry(10.0, 10.0);
+    const material = new THREE.MeshBasicMaterial({
       map: texture,
       side: THREE.DoubleSide
     });
-    var mesh = new THREE.Mesh(geometry, material);
-    mesh.scale.x = mesh.scale.y = 6.0;
+    const mesh = new THREE.Mesh(geometry, material);
     group.add(mesh);
     group.visible = true;
     return group;
   }
+
   onUpdate() {
     //loop updateの中で実行
-    if (this.current != 1) return;
+    if (this.currentType === "image") {
+      return;
+    }
+
     if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
-      this.videoImageContext.drawImage(this.video, 0, 0);
-      if (this.videoTexture) {
-        this.videoTexture.needsUpdate = true;
-      }
+      this.videoCanvasContext.drawImage(this.video, 0, 0);
+      this.videoTexture.needsUpdate = true;
     }
   }
 }

@@ -43,8 +43,8 @@ export class Main {
           { name: "2値化(ベイヤーディザ)", id: "bayer_dither", value: false }
         ],
         targetTypes: [
-          { name: "画像", id: 0, value: "image" },
-          { name: "ビデオ", id: 1, value: "video" }
+          { name: "画像", value: "image" },
+          { name: "ビデオ", value: "video" }
         ],
         picked: "image"
       },
@@ -57,7 +57,7 @@ export class Main {
         onChangeTargetRadio: item => {
           console.log(item.value);
           this.picked = item.value;
-          this.changeScene(item.id);
+          this.changeScene(item.value);
         }
       }
     });
