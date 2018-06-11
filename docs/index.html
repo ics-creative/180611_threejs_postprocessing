@@ -1,49 +1,45 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" dir="ltr">
 <head>
-    <meta charset="utf-8">
-    <meta name="description" content="three.jsでのピクセルシェーダーデモ">
-    <meta name="author" content="Nozomi Nohara">
-    <meta name="viewport" content="width=device-width" initial-scale="1">
-    <link rel="shortcut icon" href="">
-    <script src="libs/three.js"></script>
-    <script src="libs/shaders/CopyShader.js"></script>
-    <script src="libs/postprocessing/MaskPass.js"></script>
-    <script src="libs/postprocessing/RenderPass.js"></script>
-    <script src="libs/postprocessing/EffectComposer.js"></script>
-    <script src="libs/postprocessing/ShaderPass.js"></script>
-    <script src="libs/vue.min.js"></script>
-    <script defer src="ts/Main.js" type="module"></script>
-
-    <link rel="stylesheet" type="text/css" href="css/main.css" media="all">
-    <title>ピクセルシェーダーデモ</title>
+  <meta charset="utf-8"/>
+  <title>Three.js Pixel Shader Samples - ICS</title>
+  <meta name="description" content="Three.jsでのピクセルシェーダーのサンプルです。"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="google" content="notranslate"/>
+  <link rel="shortcut icon" href=""/>
+  <script defer src="libs/three.js"></script>
+  <script defer src="libs/shaders/CopyShader.js"></script>
+  <script defer src="libs/postprocessing/MaskPass.js"></script>
+  <script defer src="libs/postprocessing/RenderPass.js"></script>
+  <script defer src="libs/postprocessing/EffectComposer.js"></script>
+  <script defer src="libs/postprocessing/ShaderPass.js"></script>
+  <script defer src="libs/vue.min.js"></script>
+  <script defer src="js/Main.js" type="module"></script>
+  <link rel="stylesheet" href="css/main.css"/>
 </head>
 
 <body>
-    <div id="canvas-wrapper"></div>
-    <div id="myapp">
-        <div id="shader_select_menu">
+  <div id="canvas-wrapper"></div>
+  <div id="myapp">
+    <div id="shader_select_menu">
+      <label class="shader_checkbox"
+             v-repeat="shader_change_buttons"
+             v-on="change: _onClick"
+             style="display:block;">
+        <input type="checkbox">
+        {{name}}
+      </label>
 
-            <label class="shader_checkbox topcoat-checkbox" v-repeat="shader_change_buttons" v-on="change: _onClick" style="display:block;">
-                <input type="checkbox">
-                <div class="topcoat-checkbox__checkmark"></div>
-                {{name}}
-            </label>
-
-            <div id="object_change">
-                <label class="topcoat-radio-button" v-repeat="image_change_buttons">
-                    <input type="radio" name="topcoat" v-on="click: _onRadioClick" v-model="picked" value="{{value}}">
-
-                    <div class="topcoat-radio-button__checkmark"></div>
-                    {{name}}
-                </label>
-            </div>
-        </div>
-
+      <div id="object_change">
+        <label v-repeat="image_change_buttons">
+          <input type="radio"
+                 v-on="click: _onRadioClick"
+                 v-model="picked"
+                 value="{{value}}">
+          {{name}}
+        </label>
+      </div>
     </div>
-    <div id="webgl_no_supported">WebGLをサポートしていません</div>
-    <script>
-
-    </script>
+  </div>
 </body>
 </html>
