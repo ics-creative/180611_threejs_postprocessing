@@ -1,7 +1,11 @@
-import { VERTEX_SHADER, LUMINANCE } from "./ShaderUtil.js";
+import { VERTEX_SHADER } from "./ShaderUtil.js";
 
 // language=GLSL
 const fragmentShader = `
+#define R_LUMINANCE 0.298912
+#define G_LUMINANCE 0.586611
+#define B_LUMINANCE 0.114478
+
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
 
@@ -26,7 +30,7 @@ export class ThresholdShader {
     this.uniforms = {
       tDiffuse: { type: "t", value: null }
     };
-    this.defines = LUMINANCE;
+
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = fragmentShader;
   }

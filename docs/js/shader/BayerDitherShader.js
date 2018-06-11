@@ -1,7 +1,11 @@
-import { LUMINANCE, VERTEX_SHADER } from "./ShaderUtil.js";
+import { VERTEX_SHADER } from "./ShaderUtil.js";
 
 // language=GLSL
 const FRAGMENT_SHADER = `
+#define R_LUMINANCE 0.298912
+#define G_LUMINANCE 0.586611
+#define B_LUMINANCE 0.114478
+
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
 uniform vec2 vScreenSize;
@@ -70,7 +74,6 @@ void main() {
  */
 export class BayerDitherShader {
   constructor(width, height) {
-    this.defines = LUMINANCE;
     this.uniforms = {
       tDiffuse: { type: "t", value: null },
       vScreenSize: { type: "v2", value: new THREE.Vector2(0.0, 0.0) }

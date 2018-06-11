@@ -1,8 +1,11 @@
 import { VERTEX_SHADER } from "./ShaderUtil.js";
-import { LUMINANCE } from "./ShaderUtil.js";
 
 // language=GLSL
 const FRAGMENT_SHADER = `
+#define R_LUMINANCE 0.298912
+#define G_LUMINANCE 0.586611
+#define B_LUMINANCE 0.114478
+
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
 
@@ -27,8 +30,6 @@ void main() {
   }
   gl_FragColor = color;
 }
-
-
 `;
 
 /**
@@ -40,7 +41,7 @@ export class RandomDitherShader {
     this.uniforms = {
       tDiffuse: { type: "t", value: null }
     };
-    this.defines = LUMINANCE;
+
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = FRAGMENT_SHADER;
   }

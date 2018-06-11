@@ -1,5 +1,6 @@
 import { BayerDitherShader } from "./shader/BayerDitherShader.js";
 import { DiffusionShader } from "./shader/DiffusionShader.js";
+import { MonochromeShader } from "./shader/MonochromeShader.js";
 import { MosaicShader } from "./shader/MosaicShader.js";
 import { NegativePositiveShader } from "./shader/NegativePositiveShader.js";
 import { RandomDitherShader } from "./shader/RandomDitherShader.js";
@@ -31,6 +32,7 @@ export class Main {
       el: "#myapp",
       data: {
         shaderTypes: [
+          { name: "モノクロ", id: "monochrome", value: false },
           { name: "ネガポジ反転", id: "nega", value: false },
           { name: "セピア調", id: "sepia_tone", value: false },
           { name: "モザイク", id: "mosaic", value: false },
@@ -121,7 +123,7 @@ export class Main {
       1000
     );
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
-    this.renderer.setPixelRatio(devicePixelRatio);
+
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     document
@@ -155,6 +157,7 @@ export class Main {
   addShaders() {
     const width = window.innerWidth;
     const height = window.innerHeight;
+    this.addEffect("monochrome", new MonochromeShader());
     this.addEffect("nega", new NegativePositiveShader());
     this.addEffect("sepia_tone", new SepiaToneShader());
     this.addEffect("mosaic", new MosaicShader(width, height));

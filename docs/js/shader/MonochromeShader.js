@@ -8,26 +8,26 @@ const FRAGMENT_SHADER = `
 
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
+const vec3 monochromeScale = vec3(R_LUMINANCE, G_LUMINANCE, B_LUMINANCE);
 
 void main() {
   vec4 color = texture2D(tDiffuse, vUv);
-  float v = color.x * R_LUMINANCE + color.y * G_LUMINANCE + color.z * B_LUMINANCE;
-  color.x = v * 0.9;
-  color.y = v * 0.7;
-  color.z = v * 0.4;
+  float grayColor = dot(color.rgb, monochromeScale);
+  color = vec4(vec3(grayColor), 1.0);
   gl_FragColor = vec4(color);
 }
 `;
 
 /**
- * Sepia tone
- * @author Nozomi Nohara / http://github.com/ics-nohara
+ * Monochrome Fragment Shader.
+ * @author Yasunobu Ikeda
  */
-export class SepiaToneShader {
+export class MonochromeShader {
   constructor() {
     this.uniforms = {
       tDiffuse: { type: "t", value: null }
     };
+
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = FRAGMENT_SHADER;
   }
