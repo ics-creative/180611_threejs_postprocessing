@@ -37,7 +37,6 @@ export class Main {
           { name: "すりガラス", id: "diffusion", value: false },
           { name: "うずまき", id: "uzumaki", value: false },
           { name: "2値化(threshold)", id: "threshold", value: false },
-          { name: "2値化(threshold)", id: "threshold", value: false },
           { name: "2値化(ランダムディザ)", id: "random_dither", value: false },
           { name: "2値化(ベイヤーディザ)", id: "bayer_dither", value: false }
         ],

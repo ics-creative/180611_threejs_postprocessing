@@ -1,4 +1,35 @@
-import { ShaderUtil } from "./ShaderUtil.js";
+import { VERTEX_SHADER } from "./ShaderUtil.js";
+import { LUMINANCE } from "./ShaderUtil.js";
+
+// language=GLSL
+const FRAGMENT_SHADER = `
+varying vec2 vUv;
+uniform sampler2D tDiffuse;
+
+float rand(vec2 co) {
+  float a = fract(dot(co, vec2(2.067390879775102, 12.451168662908249))) - 0.5;
+  float s = a * (6.182785114200511 + a * a * (-38.026512460676566 + a * a * 53.392573080032137));
+  float t = fract(s * 43758.5453);
+  return t;
+}
+
+void main() {
+  vec4 color = texture2D(tDiffuse, vUv);
+  float v = color.x * R_LUMINANCE + color.y * G_LUMINANCE + color.z * B_LUMINANCE;
+  if (v > rand(vUv)) {
+    color.x = 1.0;
+    color.y = 1.0;
+    color.z = 1.0;
+  } else {
+    color.x = 0.0;
+    color.y = 0.0;
+    color.z = 0.0;
+  }
+  gl_FragColor = color;
+}
+
+
+`;
 
 /**
  * @author Nozomi Nohara / http://github.com/ics-nohara
@@ -9,33 +40,8 @@ export class RandomDitherShader {
     this.uniforms = {
       tDiffuse: { type: "t", value: null }
     };
-    this.defines = ShaderUtil.mergeDefines({}, ShaderUtil.LUMINANCE);
-    this.vertexShader = [
-      "varying vec2 vUv;",
-      "void main() {",
-      "vUv = uv;",
-      "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-      "}"
-    ].join("\n");
-    this.fragmentShader = [
-      ShaderUtil.RANDOM_DEFINE,
-      "varying vec2 vUv;",
-      "uniform sampler2D tDiffuse;",
-      "void main() {",
-      "vec4 color = texture2D(tDiffuse, vUv);",
-      "float v = color.x * R_LUMINANCE + color.y * G_LUMINANCE + color.z * B_LUMINANCE;",
-      "if (v > rand(vUv)) {",
-      "color.x = 1.0;",
-      "color.y = 1.0;",
-      "color.z = 1.0;",
-      "} else {",
-      "color.x = 0.0;",
-      "color.y = 0.0;",
-      "color.z = 0.0;",
-      "}",
-      // 描画
-      "gl_FragColor = color;",
-      "}"
-    ].join("\n");
+    this.defines = LUMINANCE;
+    this.vertexShader = VERTEX_SHADER;
+    this.fragmentShader = FRAGMENT_SHADER;
   }
 }
