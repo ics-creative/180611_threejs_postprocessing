@@ -1,44 +1,64 @@
 <!DOCTYPE html>
 <html lang="ja" dir="ltr">
-<head>
-  <meta charset="utf-8"/>
-  <title>Three.js Pixel Shader Samples - ICS</title>
-  <meta name="description" content="Three.jsでのピクセルシェーダーのサンプルです。"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="google" content="notranslate"/>
-  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.min.js"></script>
-  <script defer src="libs/shaders/CopyShader.js"></script>
-  <script defer src="libs/postprocessing/MaskPass.js"></script>
-  <script defer src="libs/postprocessing/RenderPass.js"></script>
-  <script defer src="libs/postprocessing/EffectComposer.js"></script>
-  <script defer src="libs/postprocessing/ShaderPass.js"></script>
-  <script defer src="js/Main.js" type="module"></script>
-  <link rel="stylesheet" href="css/main.css"/>
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <title>Three.js Pixel Shader Samples - ICS</title>
+    <meta
+      name="description"
+      content="Three.jsでのピクセルシェーダーのサンプルです。"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate" />
 
-<body>
-  <div id="canvas-wrapper"></div>
-  <div id="app">
-    <div id="shader_select_menu">
-      <div v-for="item in shaderTypes">
-        <label>
-          <input type="checkbox"
-                 v-bind:selected="item.value === true"
-                 v-on:change="onChangeShaderCheckbox(item)">
-          {{item.name}}
-        </label>
-      </div>
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script
+      async
+      src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"
+    ></script>
 
-      <div id="object_change">
-        <label v-for="item in targetTypes">
-          <input type="radio"
-                 v-on:click="onChangeTargetRadio(item)"
-                 name="targetTypes"
-                 v-bind:checked="item.value === picked">
-          {{item.name}}
-        </label>
+    <!-- ES Modulesのimportの解決URLを指定。ChromeとFirefoxでのみ動作します（2023年2月時点）。  -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.149.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.149.0/examples/jsm/",
+          "vue": "https://unpkg.com/vue@3.2.4/dist/vue.esm-browser.prod.js"
+        }
+      }
+    </script>
+
+    <script src="js/Main.js" type="module"></script>
+    <link rel="stylesheet" href="css/main.css" />
+  </head>
+
+  <body>
+    <div id="canvas-wrapper"></div>
+    <div id="app">
+      <div id="shader_select_menu">
+        <div v-for="item in shaderTypes">
+          <label>
+            <input
+              type="checkbox"
+              v-bind:selected="item.value === true"
+              v-on:change="onChangeShaderCheckbox(item)"
+            />
+            {{item.name}}
+          </label>
+        </div>
+
+        <div id="object_change">
+          <label v-for="item in targetTypes">
+            <input
+              type="radio"
+              v-on:click="onChangeDisplayedTarget(item)"
+              name="targetTypes"
+              v-bind:checked="item.value === picked"
+            />
+            {{item.name}}
+          </label>
+        </div>
       </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

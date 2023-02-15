@@ -1,3 +1,8 @@
+import * as THREE from "three";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+
 import { BayerDitherShader } from "./shader/BayerDitherShader.js";
 import { DiffusionShader } from "./shader/DiffusionShader.js";
 import { MonochromeShader } from "./shader/MonochromeShader.js";
@@ -9,177 +14,155 @@ import { ThresholdShader } from "./shader/ThresholdShader.js";
 import { UzumakiShader } from "./shader/UzumakiShader.js";
 import { TestObjects } from "./TestObjects.js";
 
-import { createApp } from "https://unpkg.com/vue@3.2.4/dist/vue.esm-browser.js";
+import { createApp } from "vue";
 
-window.addEventListener("DOMContentLoaded", () => {
-  const main = new Main();
-  main.initialize();
-});
+const effectList = [];
+let mouseX = 0;
+let mouseY = 0;
 
-export class Main {
-  constructor() {
-    this.effects = {};
-    this.effectList = [];
-  }
-
-  initialize() {
-    this.initVue();
-    this.init3d();
-    this.initMouse();
-  }
-
-  initVue() {
-    const app = createApp({
-      data() {
-        return {
+{
+  const app = createApp({
+    data() {
+      return {
         shaderTypes: [
-          { name: "モノクロ", id: "monochrome", value: false },
-          { name: "ネガポジ反転", id: "nega", value: false },
-          { name: "セピア調", id: "sepia_tone", value: false },
-          { name: "モザイク", id: "mosaic", value: false },
-          { name: "すりガラス", id: "diffusion", value: false },
-          { name: "うずまき", id: "uzumaki", value: false },
-          { name: "2値化(threshold)", id: "threshold", value: false },
-          { name: "2値化(ランダムディザ)", id: "random_dither", value: false },
-          { name: "2値化(ベイヤーディザ)", id: "bayer_dither", value: false }
+          { name: "モノクロ", id: "monochrome", selected: false },
+          { name: "ネガポジ反転", id: "nega", selected: false },
+          { name: "セピア調", id: "sepiaTone", selected: false },
+          { name: "モザイク", id: "mosaic", selected: false },
+          { name: "すりガラス", id: "diffusion", selected: false },
+          { name: "うずまき", id: "uzumaki", selected: false },
+          { name: "2値化(threshold)", id: "threshold", selected: false },
+          {
+            name: "2値化(ランダムディザ)",
+            id: "randomDither",
+            selected: false,
+          },
+          { name: "2値化(ベイヤーディザ)", id: "bayerDither", selected: false },
         ],
         targetTypes: [
           { name: "画像", value: "image" },
-          { name: "ビデオ", value: "video" }
+          { name: "ビデオ", value: "video" },
         ],
-        picked: "image"
-      }
+        picked: "image",
+      };
+    },
+    methods: {
+      onChangeShaderCheckbox(item) {
+        item.selected = !item.selected;
+        changeShader(item.id, item.selected);
       },
-      methods: {
-        onChangeShaderCheckbox: item => {
-          item.value = !item.value;
-          this.changeShader(item.id, item.value);
-        },
-        onChangeTargetRadio: item => {
-          console.log(item.value);
-          this.picked = item.value;
-          this.changeScene(item.value);
-        }
-      }
-    });
+      onChangeDisplayedTarget(item) {
+        this.picked = item.value;
+        changeDisplayedMesh(item.value);
+      },
+    },
+  });
 
-    app.mount("#app");
+  app.mount("#app");
+}
+
+//  Three.jsの初期化処理
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(
+  77,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+camera.position.z = 3;
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.getElementById("canvas-wrapper").appendChild(renderer.domElement);
+
+const objects = new TestObjects(renderer);
+scene.add(objects.meshImage);
+scene.add(objects.meshVideo);
+
+// postprocessing
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+// EffectComposerを使わない、通常のレンダリングかどうか？
+let normalRenderMode = true;
+
+document.addEventListener("pointermove", (event) => {
+  mouseX = event.pageX;
+  mouseY = event.pageY;
+});
+
+const width = window.innerWidth;
+const height = window.innerHeight;
+
+const uzumaki = new UzumakiShader(innerWidth, innerHeight);
+const uzumakiEffect = addEffect("uzumaki", uzumaki);
+uzumaki.uniforms = uzumakiEffect.pass.uniforms;
+
+effectList.push(
+  addEffect("monochrome", new MonochromeShader()),
+  addEffect("nega", new NegativePositiveShader()),
+  addEffect("sepiaTone", new SepiaToneShader()),
+  addEffect("mosaic", new MosaicShader(width, height)),
+  addEffect("diffusion", new DiffusionShader(width, height)),
+  uzumakiEffect,
+  addEffect("threshold", new ThresholdShader()),
+  addEffect("randomDither", new RandomDitherShader()),
+  addEffect("bayerDither", new BayerDitherShader(width, height))
+);
+
+tick();
+
+function changeShader(id, enabled) {
+  normalRenderMode = false;
+
+  // 該当する項目を変更
+  const effect = effectList.find((item) => item.id === id);
+  if (effect) {
+    effect.pass.enabled = enabled;
   }
 
-  changeScene(type) {
-    this.objects.change(type);
-  }
+  // エフェクトリスの状態にあわせて更新
+  let renderToScreen = false;
+  for (let i = 0; i < effectList.length; i++) {
+    const effect = effectList[i];
 
-  initMouse() {
-    if ("ontouchstart" in window) {
-      this.renderer.domElement.addEventListener("touchmove", event => {
-        event.preventDefault();
-        this.mouseX = event.changedTouches[0].pageX;
-        this.mouseY = event.changedTouches[0].pageY;
-      });
-    }
-    document.addEventListener("mousemove", event => {
-      this.mouseX = event.pageX;
-      this.mouseY = event.pageY;
-    });
-  }
-
-  initObjects() {
-    this.objects = new TestObjects(this.scene, this.renderer);
-  }
-
-  resetShader() {
-    this.normalRenderMode = true;
-    for (let i = 0; i < this.effectList.length; i++) {
-      this.effectList[i].pass.enabled = false;
-      this.effectList[i].pass.renderToScreen = false;
-    }
-  }
-
-  changeShader(id, value) {
-    this.normalRenderMode = false;
-    this.effects[id].pass.enabled = value;
-    let renderToScreen = false;
-    for (let i = this.effectList.length - 1; i >= 0; i--) {
-      if (this.effectList[i].pass.enabled && !renderToScreen) {
-        this.effectList[i].pass.renderToScreen = true;
-        renderToScreen = true;
-      } else {
-        this.effectList[i].pass.renderToScreen = false;
-      }
-    }
-    if (!renderToScreen) {
-      this.normalRenderMode = true;
-    }
-  }
-
-  init3d() {
-    //  Three.jsの初期化処理
-    this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(
-      77,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
-
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
-    document
-      .getElementById("canvas-wrapper")
-      .appendChild(this.renderer.domElement);
-    this.initObjects();
-    // postprocessing
-    this.composer = new THREE.EffectComposer(this.renderer);
-    this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
-    this.addShaders();
-    this.normalRenderMode = true;
-    this.camera.position.z = 3;
-
-    this.render();
-  }
-
-  render() {
-    requestAnimationFrame(() => {
-      this.render();
-    });
-    if (this.normalRenderMode) {
-      this.renderer.render(this.scene, this.camera);
+    if (effect.pass.enabled && !renderToScreen) {
+      effect.pass.renderToScreen = true;
+      renderToScreen = true;
     } else {
-      this.composer.render();
+      effect.pass.renderToScreen = false;
     }
-    //  マウス位置を更新
-    this.uzumaki.setMousePos(this.mouseX, this.mouseY);
-    this.objects.onUpdate();
   }
-
-  addShaders() {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    this.addEffect("monochrome", new MonochromeShader());
-    this.addEffect("nega", new NegativePositiveShader());
-    this.addEffect("sepia_tone", new SepiaToneShader());
-    this.addEffect("mosaic", new MosaicShader(width, height));
-    this.addEffect("diffusion", new DiffusionShader(width, height));
-
-    this.uzumaki = new UzumakiShader(width, height);
-
-    this.addEffect("uzumaki", this.uzumaki);
-    this.uzumaki.uniforms = this.effects["uzumaki"].pass.uniforms;
-
-    this.addEffect("threshold", new ThresholdShader());
-    this.addEffect("random_dither", new RandomDitherShader());
-    this.addEffect("bayer_dither", new BayerDitherShader(width, height));
+  if (!renderToScreen) {
+    normalRenderMode = true;
   }
+}
 
-  addEffect(name, shader) {
-    const pass = new THREE.ShaderPass(shader);
-    this.composer.addPass(pass);
-    pass.renderToScreen = false;
-    pass.enabled = false;
-    this.effects[name] = { material: shader, pass: pass };
-    //  順番用
-    this.effectList.push(this.effects[name]);
+function changeDisplayedMesh(type) {
+  objects.change(type);
+}
+
+function tick() {
+  requestAnimationFrame(tick);
+  if (normalRenderMode) {
+    // 通常モードの場合
+    renderer.render(scene, camera);
+  } else {
+    // エフェクトの適用が必要な場合
+    composer.render();
   }
+  //  マウス位置を更新
+  uzumaki.setMousePos(mouseX, mouseY);
+  objects.onUpdate();
+}
+
+function addEffect(name, shader) {
+  const pass = new ShaderPass(shader);
+  composer.addPass(pass);
+  pass.renderToScreen = false;
+  pass.enabled = false;
+  const effect = { id: name, material: shader, pass: pass };
+
+  return effect;
 }

@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-family: sans-serif;
 }
 
 canvas {
@@ -35,4 +36,3 @@ canvas {
 #object_change label {
   margin: 10px;
 }
-

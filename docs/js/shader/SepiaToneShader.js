@@ -26,7 +26,7 @@ void main() {
 export class SepiaToneShader {
   constructor() {
     this.uniforms = {
-      tDiffuse: { type: "t", value: null }
+      tDiffuse: { type: "t", value: null },
     };
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = FRAGMENT_SHADER;

@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { VERTEX_SHADER } from "./ShaderUtil.js";
 
 // language=GLSL
@@ -25,7 +26,7 @@ export class MosaicShader {
     this.uniforms = {
       tDiffuse: { type: "t", value: null },
       vScreenSize: { type: "v2", value: new THREE.Vector2(0.0, 0.0) },
-      fMosaicScale: { type: "f", value: null }
+      fMosaicScale: { type: "f", value: null },
     };
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = FRAGMENT_SHADER;

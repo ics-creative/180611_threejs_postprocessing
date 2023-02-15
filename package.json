@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "format": "prettier --write 'docs/{js,css}/**/*.{js,css}'"
+    "format": "prettier --write 'docs/{js,css}/**/*.{js,css}' && prettier --write 'docs/**/*.html'"
   },
   "license": "MIT",
   "devDependencies": {
@@ -8,7 +8,7 @@
   },
   "private": true,
   "dependencies": {
-    "@types/three": "^0.103.2",
+    "@types/three": "^0.149.0",
     "vue": "^3.2.47"
   }
 }

@@ -1,6 +1,7 @@
-// language=GLSL
+import * as THREE from "three";
 import { VERTEX_SHADER } from "./ShaderUtil.js";
 
+// language=GLSL
 const FRAGMENT_SHADER = `
 uniform sampler2D tDiffuse;
 varying vec2 vUv;
@@ -37,13 +38,18 @@ export class UzumakiShader {
       vScreenSize: { type: "v2", value: new THREE.Vector2(300, 200) },
       vCenter: { type: "v2", value: new THREE.Vector2(1000, 0) },
       fRadius: { type: "f", value: 150.0 },
-      fUzuStrength: { type: "f", value: 2.5 }
+      fUzuStrength: { type: "f", value: 2.5 },
     };
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = FRAGMENT_SHADER;
     this.setScreenSize(width, height);
   }
 
+  /**
+   * マウス座標を更新します。
+   * @param mouseX {number}
+   * @param mouseY {number}
+   */
   setMousePos(mouseX, mouseY) {
     this.uniforms["vCenter"].value.x = mouseX;
     this.uniforms["vCenter"].value.y =

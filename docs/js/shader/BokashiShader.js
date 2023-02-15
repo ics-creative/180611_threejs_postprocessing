@@ -39,7 +39,7 @@ export class BokashiShader {
       tDiffuse: { type: "t", value: null },
       vScreenSize: { type: "v2", value: new THREE.Vector2(0.0, 0.0) },
       vCenter: { type: "v2", value: new THREE.Vector2(1000, 100) },
-      fBokashiScale: { type: "f", value: null }
+      fBokashiScale: { type: "f", value: null },
     };
     this.vertexShader = VERTEX_SHADER;
     //	windows / chormeだとcolor値が壊れるみたいでバグる

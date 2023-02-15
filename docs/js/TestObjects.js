@@ -1,15 +1,13 @@
+import * as THREE from "three";
+
 /**
- * @author Nozomi Nohara / http://github.com/ics-nohara
  * 画面上に表示するオブジェクトをまとめたクラスです。
  */
 export class TestObjects {
-  constructor(scene, renderer) {
+  constructor(renderer) {
     this.renderer = renderer;
     this.meshImage = this.createImagePlane();
     this.meshVideo = this.createVideoPlane();
-
-    scene.add(this.meshImage);
-    scene.add(this.meshVideo);
 
     this.currentType = "image";
   }
@@ -34,9 +32,11 @@ export class TestObjects {
   }
 
   createVideoPlane() {
-    //video要素とそれをキャプチャするcanvas要素を生成
+    // video要素とそれをキャプチャするcanvas要素を生成
     this.video = document.createElement("video");
     this.video.src = "texture/BigBuckBunny_320x180.mp4";
+    this.video.width = 320;
+    this.video.height = 180;
     this.video.load();
     this.video.pause();
     this.video.volume = 0;
@@ -50,18 +50,18 @@ export class TestObjects {
     this.videoCanvasContext.fillStyle = "#000000";
     this.videoCanvasContext.fillRect(0, 0, canvas.width, canvas.height);
 
-    //生成したcanvasをtextureとしてTHREE.Textureオブジェクトを生成
+    // 生成したcanvasをtextureとしてTHREE.Textureオブジェクトを生成
     this.videoTexture = new THREE.Texture(canvas);
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
 
-    //生成したvideo textureをmapに指定し、overdrawをtureにしてマテリアルを生成
+    // 生成したvideo textureをmapに指定し、overdrawをtureにしてマテリアルを生成
     const movieMaterial = new THREE.MeshBasicMaterial({
       map: this.videoTexture,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
 
-    const movieGeometry = new THREE.PlaneBufferGeometry(32, 18);
+    const movieGeometry = new THREE.PlaneGeometry(32, 18);
     const movieScreen = new THREE.Mesh(movieGeometry, movieMaterial);
     movieScreen.scale.setLength(0.5);
 
@@ -81,7 +81,7 @@ export class TestObjects {
     const geometry = new THREE.PlaneGeometry(10.0, 10.0);
     const material = new THREE.MeshBasicMaterial({
       map: texture,
-      side: THREE.DoubleSide
+      side: THREE.FrontSide,
     });
     const mesh = new THREE.Mesh(geometry, material);
     group.add(mesh);
@@ -90,11 +90,12 @@ export class TestObjects {
   }
 
   onUpdate() {
-    //loop updateの中で実行
+    // loop updateの中で実行
     if (this.currentType === "image") {
       return;
     }
 
+    // ビデオの場合は、videoの再生フレームをcanvasに描画する
     if (this.video.readyState === this.video.HAVE_ENOUGH_DATA) {
       this.videoCanvasContext.drawImage(this.video, 0, 0);
       this.videoTexture.needsUpdate = true;

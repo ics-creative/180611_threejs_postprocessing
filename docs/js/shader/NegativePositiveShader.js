@@ -18,7 +18,7 @@ void main() {
 export class NegativePositiveShader {
   constructor() {
     this.uniforms = {
-      tDiffuse: { type: "t", value: null }
+      tDiffuse: { type: "t", value: null },
     };
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = FRAGMENT_SHADER;

@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { VERTEX_SHADER } from "./ShaderUtil.js";
 
 // language=GLSL
@@ -26,7 +27,7 @@ export class DiffusionShader {
   constructor(width, height) {
     this.uniforms = {
       tDiffuse: { type: "t", value: null },
-      vScreenSize: { type: "v2", value: new THREE.Vector2(0.0, 0.0) }
+      vScreenSize: { type: "v2", value: new THREE.Vector2(0.0, 0.0) },
     };
     this.vertexShader = VERTEX_SHADER;
     this.fragmentShader = FRAGMENT_SHADER;
