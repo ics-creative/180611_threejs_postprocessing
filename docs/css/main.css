@@ -36,8 +36,3 @@ canvas {
   margin: 10px;
 }
 
-@media screen and (max-width: 480px) {
-  #shader_select_menu {
-    zoom: 0.5;
-  }
-}

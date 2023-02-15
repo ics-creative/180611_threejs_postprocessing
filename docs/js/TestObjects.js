@@ -76,9 +76,9 @@ export class TestObjects {
     const texture = new THREE.TextureLoader().load(
       "texture/flower_1024x1024.jpg"
     );
-    texture.anisotropy = this.renderer.getMaxAnisotropy();
+    texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
 
-    const geometry = new THREE.PlaneBufferGeometry(10.0, 10.0);
+    const geometry = new THREE.PlaneGeometry(10.0, 10.0);
     const material = new THREE.MeshBasicMaterial({
       map: texture,
       side: THREE.DoubleSide

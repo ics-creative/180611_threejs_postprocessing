@@ -8,7 +8,7 @@
   },
   "private": true,
   "dependencies": {
-    "@types/three": "^0.101.0",
+    "@types/three": "^0.103.2",
     "vue": "^3.2.47"
   }
 }

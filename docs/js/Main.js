@@ -85,11 +85,7 @@ export class Main {
   }
 
   initObjects() {
-    this.objects = new TestObjects(this.scene, this.renderer, this.spMode);
-    if (this.spMode) {
-      const changeButton = document.getElementById("object_change");
-      changeButton.style.display = "none";
-    }
+    this.objects = new TestObjects(this.scene, this.renderer);
   }
 
   resetShader() {
