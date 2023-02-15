@@ -2,6 +2,7 @@ import { VERTEX_SHADER } from "./ShaderUtil.js";
 
 // language=GLSL
 const FRAGMENT_SHADER = `
+// 輝度を計算するときの重ねづけ。緑の重みが高いのは、人間の目が緑に敏感だからです。
 #define R_LUMINANCE 0.298912
 #define G_LUMINANCE 0.586611
 #define B_LUMINANCE 0.114478

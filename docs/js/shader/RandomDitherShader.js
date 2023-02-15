@@ -9,6 +9,7 @@ const FRAGMENT_SHADER = `
 varying vec2 vUv;
 uniform sampler2D tDiffuse;
 
+// 自作のランダム関数
 float rand(vec2 co) {
   float a = fract(dot(co, vec2(2.067390879775102, 12.451168662908249))) - 0.5;
   float s = a * (6.182785114200511 + a * a * (-38.026512460676566 + a * a * 53.392573080032137));
@@ -18,12 +19,15 @@ float rand(vec2 co) {
 
 void main() {
   vec4 color = texture2D(tDiffuse, vUv);
+  // 輝度を計算する（0.0〜1.0の値になる）
   float v = color.x * R_LUMINANCE + color.y * G_LUMINANCE + color.z * B_LUMINANCE;
   if (v > rand(vUv)) {
+    // 白にする
     color.x = 1.0;
     color.y = 1.0;
     color.z = 1.0;
   } else {
+    // 黒にする
     color.x = 0.0;
     color.y = 0.0;
     color.z = 0.0;
