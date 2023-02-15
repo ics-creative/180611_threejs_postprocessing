@@ -4,11 +4,11 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "prettier": "^1.13.5"
+    "prettier": "^2.8.4"
   },
   "private": true,
   "dependencies": {
-    "@types/three": "^0.92.4",
-    "vue": "^2.5.16"
+    "@types/three": "^0.101.0",
+    "vue": "^3.2.47"
   }
 }

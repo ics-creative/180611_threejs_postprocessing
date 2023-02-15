@@ -9,6 +9,8 @@ import { ThresholdShader } from "./shader/ThresholdShader.js";
 import { UzumakiShader } from "./shader/UzumakiShader.js";
 import { TestObjects } from "./TestObjects.js";
 
+import { createApp } from "https://unpkg.com/vue@3.2.4/dist/vue.esm-browser.js";
+
 window.addEventListener("DOMContentLoaded", () => {
   const main = new Main();
   main.initialize();
@@ -27,10 +29,9 @@ export class Main {
   }
 
   initVue() {
-    // v-repeat
-    new Vue({
-      el: "#myapp",
-      data: {
+    const app = createApp({
+      data() {
+        return {
         shaderTypes: [
           { name: "モノクロ", id: "monochrome", value: false },
           { name: "ネガポジ反転", id: "nega", value: false },
@@ -47,6 +48,7 @@ export class Main {
           { name: "ビデオ", value: "video" }
         ],
         picked: "image"
+      }
       },
       methods: {
         onChangeShaderCheckbox: item => {
@@ -60,6 +62,8 @@ export class Main {
         }
       }
     });
+
+    app.mount("#app");
   }
 
   changeScene(type) {
