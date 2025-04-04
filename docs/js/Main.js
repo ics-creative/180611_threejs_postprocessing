@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
-import { ShaderPass } from "three/addons/postprocessing/ShaderPass.js";
 import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { ShaderPass2 } from "./postprocessing/ShaderPass2.js";
 
 import { BayerDitherShader } from "./shader/BayerDitherShader.js";
 import { DiffusionShader } from "./shader/DiffusionShader.js";
@@ -70,7 +70,14 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 camera.position.z = 3;
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+// WebGL2.0を使用するためのレンダラー設定
+const canvas = document.createElement("canvas");
+const context = canvas.getContext("webgl2");
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  canvas: canvas,
+  context: context,
+});
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -158,7 +165,7 @@ function tick() {
 }
 
 function addEffect(name, shader) {
-  const pass = new ShaderPass(shader);
+  const pass = new ShaderPass2(shader);
   composer.addPass(pass);
   pass.renderToScreen = false;
   pass.enabled = false;

@@ -1,13 +1,17 @@
 import { VERTEX_SHADER } from "./ShaderUtil.js";
 
-// language=GLSL
+// language=GLSL ES 3.0
 const FRAGMENT_SHADER = `
-varying vec2 vUv;
+precision highp float;
+precision highp int;
+
+in vec2 vUv;
 uniform sampler2D tDiffuse;
+out vec4 fragColor;
 
 void main() {
-  vec4 color = texture2D(tDiffuse, vUv);
-  gl_FragColor = vec4(1.0 - color.x, 1.0 - color.y, 1.0 - color.z, 1.0);
+  vec4 color = texture(tDiffuse, vUv);
+  fragColor = vec4(1.0 - color.x, 1.0 - color.y, 1.0 - color.z, 1.0);
 }
 `;
 
