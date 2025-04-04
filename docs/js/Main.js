@@ -74,6 +74,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
+renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
 document.getElementById("canvas-wrapper").appendChild(renderer.domElement);
 
 const objects = new TestObjects(renderer);
@@ -82,7 +83,11 @@ scene.add(objects.meshVideo);
 
 // postprocessing
 const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
+composer.outputColorSpace = THREE.LinearSRGBColorSpace;
+const renderPass = new RenderPass(scene, camera);
+renderPass.inputColorSpace = THREE.LinearSRGBColorSpace;
+renderPass.outputColorSpace = THREE.LinearSRGBColorSpace;
+composer.addPass(renderPass);
 
 // EffectComposerを使わない、通常のレンダリングかどうか？
 let normalRenderMode = true;
@@ -159,6 +164,8 @@ function tick() {
 
 function addEffect(name, shader) {
   const pass = new ShaderPass(shader);
+  pass.inputColorSpace = THREE.LinearSRGBColorSpace;
+  pass.outputColorSpace = THREE.LinearSRGBColorSpace;
   composer.addPass(pass);
   pass.renderToScreen = false;
   pass.enabled = false;

@@ -52,6 +52,7 @@ export class TestObjects {
 
     // 生成したcanvasをtextureとしてTHREE.Textureオブジェクトを生成
     this.videoTexture = new THREE.Texture(canvas);
+    this.videoTexture.colorSpace = THREE.LinearSRGBColorSpace;
     this.videoTexture.minFilter = THREE.LinearFilter;
     this.videoTexture.magFilter = THREE.LinearFilter;
 
@@ -76,6 +77,7 @@ export class TestObjects {
     const texture = new THREE.TextureLoader().load(
       "texture/flower_1024x1024.jpg"
     );
+    texture.colorSpace = THREE.LinearSRGBColorSpace;
     texture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
 
     const geometry = new THREE.PlaneGeometry(10.0, 10.0);
