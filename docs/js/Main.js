@@ -70,7 +70,14 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 camera.position.z = 3;
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+// WebGL2.0を使用するためのレンダラー設定
+const canvas = document.createElement("canvas");
+const context = canvas.getContext("webgl2");
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  canvas: canvas,
+  context: context,
+});
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -163,9 +170,19 @@ function tick() {
 }
 
 function addEffect(name, shader) {
-  const pass = new ShaderPass(shader);
+  
+  const material = new THREE.RawShaderMaterial({
+    defines: Object.assign({}, shader.defines || {}),
+    uniforms: shader.uniforms,
+    vertexShader: shader.vertexShader,
+    fragmentShader: shader.fragmentShader,
+    glslVersion: THREE.GLSL3, 
+  });
+
+  const pass = new ShaderPass(material);
   pass.inputColorSpace = THREE.LinearSRGBColorSpace;
   pass.outputColorSpace = THREE.LinearSRGBColorSpace;
+
   composer.addPass(pass);
   pass.renderToScreen = false;
   pass.enabled = false;

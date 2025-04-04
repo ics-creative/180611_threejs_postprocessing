@@ -1,16 +1,21 @@
+import * as THREE from "three";
 import { VERTEX_SHADER } from "./ShaderUtil.js";
 
-// language=GLSL
+// language=GLSL ES 3.0
 const FRAGMENT_SHADER = `
-varying vec2 vUv;
+precision highp float;
+precision highp int;
+
+in vec2 vUv;
 uniform sampler2D tDiffuse;
 uniform vec2 vScreenSize;
 uniform vec2 vCenter;
 uniform float fBokashiScale;
+out vec4 fragColor;
 
 void main() {
   if(length(vCenter - vUv * vScreenSize) >= fBokashiScale) {
-    gl_FragColor = texture2D(tDiffuse, vUv);
+    fragColor = texture(tDiffuse, vUv);
     return;
   }
   vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
@@ -22,10 +27,10 @@ void main() {
     float x = (floor(vUv.x * vScreenSize.x) + s + float(i)) / vScreenSize.x;
     for(int j = 0; j < int(count); j++) {
       float y = (floor(vUv.y * vScreenSize.y) + s + float(j)) / vScreenSize.y;
-      color += texture2D(tDiffuse, vec2(x, y));
+      color += texture(tDiffuse, vec2(x, y));
     }
   }
-  gl_FragColor = color / float(count * count);
+  fragColor = color / float(count * count);
 }
 `;
 
