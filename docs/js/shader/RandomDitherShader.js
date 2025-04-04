@@ -1,13 +1,16 @@
 import { VERTEX_SHADER } from "./ShaderUtil.js";
 
-// language=GLSL
+// language=GLSL ES 3.0
 const FRAGMENT_SHADER = `
+precision mediump float;
+
 #define R_LUMINANCE 0.298912
 #define G_LUMINANCE 0.586611
 #define B_LUMINANCE 0.114478
 
-varying vec2 vUv;
+in vec2 vUv;
 uniform sampler2D tDiffuse;
+out vec4 fragColor;
 
 // 自作のランダム関数
 float rand(vec2 co) {
@@ -18,7 +21,7 @@ float rand(vec2 co) {
 }
 
 void main() {
-  vec4 color = texture2D(tDiffuse, vUv);
+  vec4 color = texture(tDiffuse, vUv);
   // 輝度を計算する（0.0〜1.0の値になる）
   float v = color.x * R_LUMINANCE + color.y * G_LUMINANCE + color.z * B_LUMINANCE;
   if (v > rand(vUv)) {
@@ -32,7 +35,7 @@ void main() {
     color.y = 0.0;
     color.z = 0.0;
   }
-  gl_FragColor = color;
+  fragColor = color;
 }
 `;
 
